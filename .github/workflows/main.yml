@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: init repo
+        run: /usr/bin/git init /home/runner/work/Keyshare/Keyshare; /usr/bin/git remote add origin https://github.com/shintyl/Keyshare
       - name: checkout from dev-deploy
         run: git checkout dev-deploy
       - name: force push to main-deploy
