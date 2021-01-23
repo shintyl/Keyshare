@@ -67,23 +67,28 @@ function App() {
         <div className="Body">
           <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
           {selection === "student" ?
-            <div>
-              <Typography variant='h4' className={classes.entryId}>
-                Enter your room ID:
-              </Typography>
-              <TextField className={classes.fillText} name='roomId' variant='filled' size='small' required label='Room ID is required' onChange={updateValues}/>
-            </div>
+            <Typography variant='h4' className={classes.entryId}>
+              Enter your room ID:
+            </Typography>
             :
-            <div>
-              <Typography variant='h4' className={classes.entryId}>
-                Use room ID:
-              </Typography>
-              <TextField className={classes.fillText} name='genRoomId' variant='filled' size='small' label='Your room ID (read-only)' defaultValue="Hello World" InputProps={{readOnly: true,}}/>
-            </div>
+            <Typography variant='h4' className={classes.entryId}>
+              Use this room ID:
+            </Typography>
           }
-          <Button variant="contained">
-            Connect
-	      </Button>
+          {selection === "student" ?
+            <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
+            :
+            <TextField name='genRoomId' variant='filled' value="X4YQ78NQ" InputProps={{readOnly: true,}}/>
+          }
+          {selection === "student" ?
+            <Button variant="contained">
+              Connect
+	        </Button>
+            :
+            <Button variant="contained">
+              Copy
+	        </Button>
+          }
         </div>
         <div className="Instructions">
           <Paper elevation={10}>
