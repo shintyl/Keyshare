@@ -3,7 +3,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 30vh;
   display: flex;
   flex-direction: column;
@@ -13,8 +12,7 @@
 }
 
 .Body {
-  background-color: #282c34;
-  min-height: 70vh;
+  min-height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,10 +21,15 @@
   color: black;
 }
 
-.Body-link {
-  color: #61dafb;
+.Instructions {
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: black;
 }
 
-.img {
-	width: 80%;
+.Body-link {
+  color: #61dafb;
 }

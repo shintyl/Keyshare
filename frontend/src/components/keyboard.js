@@ -1,9 +1,7 @@
 import { Instrument } from "piano-chart";
 
 export default function Piano() {
-    
-
-	const piano = new Instrument(document.getElementById('pianoContainer'),{
+    const piano = new Instrument(document.getElementById('pianoContainer'),{
         startOctave: 1,
     	startNote: "A",
     	endOctave: 6,

@@ -2,10 +2,8 @@ import backgroundPhoto from './resources/keyshare-bg.png';
 import './App.css';
 import React from "react";
 import ReactDOM from 'react-dom';
-import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import {Button, Paper, TextField, Typography} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     backgroundDiv: {
@@ -34,15 +32,22 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={backgroundPhoto} className={classes.backgroundDiv} style={{zIndex:0}}/>
-        <Typography variant='h2'>KEYSHARE</Typography>
       </header>
       <div className="Body">
-        <Typography variant='h4' style={{zIndex:1}}>Enter your room ID:</Typography>
-	    <TextField name='roomId' onChange={updateValues} style={{zIndex:1},{color:"black"}}/>
+        <img src={backgroundPhoto} className={classes.backgroundDiv} style={{zIndex:-1}}/>
+        <Typography variant='h4'>Enter your room ID:</Typography>
+	    <TextField name='roomId' variant='filled' size='small' required label='Room ID is required' onChange={updateValues}/>
         <Button variant="contained">
-          <Typography variant='h5'>Connect</Typography>
+          Connect
 	    </Button>
+      </div>
+      <div className="Instructions">
+        <Paper elevation={3}>
+          <Typography variant='h6'>Instructions:</Typography>
+          <Typography variant='h6'>1) Enter your instructor's room code above (which they should give you)</Typography>
+          <Typography variant='h6'>2) Connect into the room by pressing the connect button</Typography>
+          <Typography variant='h6'>3) Plug in your keyboard to your computer, and start playing.</Typography>
+        </Paper>
       </div>
     </div>
   );
