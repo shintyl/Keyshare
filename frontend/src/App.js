@@ -87,12 +87,6 @@ function App() {
         </div>
         <div className="Instructions">
           <Paper elevation={10}>
-
-            <Typography className="topInstruction" variant='h6'><b>Instructions:</b></Typography>
-            <Typography variant='h6'>1) Enter your instructor's room code above (which they should give you)</Typography>
-            <Typography variant='h6'>2) Connect into the room by pressing the connect button</Typography>
-            <Typography className="bottomInstruction" variant='h6'>3) Plug in your keyboard to your computer, and start playing.</Typography>
-
             {selection === "student" ?
               <div>
                 <Typography className="topInstruction" variant='h6'>
