@@ -1,5 +1,11 @@
+@font-face {
+  font-family: 'Pineapple Grass';
+  src: url('./fonts/Pineapple.ttf');
+}
+
 .App {
   text-align: center;
+  font-family: 'Pineapple Grass';
 }
 
 .App-header {
