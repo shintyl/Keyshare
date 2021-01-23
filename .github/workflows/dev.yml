@@ -18,8 +18,7 @@ jobs:
       - name: install npm dependencies
         run: (cd ./frontend && npm install)
       - name: generate static assets
-        run: (cd ./frontend && npm run build)
-        #CI='' npm run build
+        run: (cd ./frontend && CI='' npm run build)
       - name: move static assets
         run: mv ./frontend/build ./src/main/resources
       - name: Set up JDK 1.8
