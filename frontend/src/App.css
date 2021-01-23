@@ -1,11 +1,11 @@
 @font-face {
-  font-family: 'Pineapple Grass';
-  src: url('./fonts/Pineapple.ttf');
+  font-family: "American Typewriter";
+  src: url('./fonts/American Typewriter Regular.ttf');
 }
 
 .App {
   text-align: center;
-  font-family: 'Pineapple Grass';
+  font-family: 'American Typewriter';
 }
 
 .App-header {
@@ -37,9 +37,14 @@
   padding: 50px 200px 0 200px;
 }
 
-.Selector {
-  align-items: right;
-  font-size: calc(10px + 2vmin);
-  color: black;
-  display: block;
+.Body-link {
+  color: #61dafb;
+}
+
+.topInstruction {
+  padding-top: 10px;
+}
+
+.bottomInstruction {
+  padding-bottom: 10px;
 }
