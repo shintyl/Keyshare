@@ -3,7 +3,7 @@ import './App.css';
 import React from "react";
 import {createMuiTheme, makeStyles, ThemeProvider} from "@material-ui/core/styles";
 import {Button, Grid, Paper, TextField, Typography} from "@material-ui/core";
-import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab"
+import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
     backgroundDiv: {
