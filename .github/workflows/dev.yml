@@ -48,4 +48,4 @@ jobs:
           # git add -f
           # git commit -m "None"
       - name: Deploy to Heroku
-        run: git checkout `git subtree split -P iterations`; git push -f origin HEAD:heroku-deploy
+        run: git push -f origin HEAD:dev-deploy
