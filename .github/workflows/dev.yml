@@ -2,13 +2,12 @@ name: keyshare CD to Heroku
 
 on:
   push:
-    branches: [ dev ]
+    branches: [dev]
   pull_request:
-    branches: [ dev ]
+    branches: [dev]
 
 jobs:
   buildReactAssets:
-    
     runs-on: ubuntu-latest
 
     steps:
@@ -19,9 +18,8 @@ jobs:
         run: (cd ./frontend && npm install)
       - name: generate static assets
         run: (cd ./frontend && npm run build)
-    
+
   buildServerJar:
-    
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +31,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: build with Gradle
         run: ./gradlew build jar #TODO: move jar
-  
+
   deployToHeroku:
     runs-on: ubuntu-latest
 
@@ -41,11 +39,10 @@ jobs:
 
     steps:
       - name: Commit on the runner
-        run:
-          git config user.email "runner@github.com";
+        run: git config user.email "runner@github.com";
           git config user.name "Runner";
-          git add -f 
-          git add -f 
+          git add -f
+          git add -f
           git commit -m "None"
       - name: Deploy to Heroku
         run: git checkout `git subtree split -P iterations`; git push -f origin HEAD:heroku-deploy
