@@ -33,9 +33,9 @@ jobs:
       - name: Commit on the runner
         run: 
           git config user.email "runner@github.com";
-          # git config user.name "Runner";
-          # git add -f
-          # git add -f
-          # git commit -m "None"
+          git config user.name "Runner";
+          git add -f ./src/main/resources/*;
+          git add -f ./build/libs/server-1.0-SNAPSHOT.jar;
+          git commit -m "None"
       - name: Deploy to Heroku
         run: git push -f origin HEAD:dev-deploy
