@@ -21,13 +21,15 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Typography variant='h4'>Room ID</Typography>
-	<TextField name='roomId' onChange={updateValues} required label="required"/>
-        <Button variant="contained" href = "./pages/temp.js">
+        <Typography variant='h2'>KEYSHARE</Typography>
+      </header>
+      <div className="Body">
+        <Typography variant='h4'>Enter your room ID:</Typography>
+	    <TextField name='roomId' onChange={updateValues}/>
+        <Button variant="contained">
           <Typography variant='h5'>Connect</Typography>
 	    </Button>
-      </header>
+      </div>
     </div>
   );
 }
