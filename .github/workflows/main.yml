@@ -40,12 +40,12 @@ jobs:
     needs: [buildReactAssets, buildServerJar]
 
     steps:
-        - name: Commit on the runner
-          run:
-            git config user.email "runner@github.com";
-            git config user.name "Runner";
-            git add -f # add react static assets
-            git add -f # add jar
-            git commit -m "None"
-        - name: Deploy to Heroku
-            run: git checkout `git subtree split -P iterations`; git push -f origin HEAD:heroku-deploy
+      - name: Commit on the runner
+        run:
+          git config user.email "runner@github.com";
+          git config user.name "Runner";
+          git add -f
+          git add -f
+          git commit -m "None"
+      - name: Deploy to Heroku
+        run: git checkout `git subtree split -P iterations`; git push -f origin HEAD:heroku-deploy
