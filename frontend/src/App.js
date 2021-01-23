@@ -38,7 +38,6 @@ function App() {
   });
 
   const [dataConnection, setDataConnection] = React.useState(null)
-  const [isConnectionOpen, setIsConnectionOpen] = React.useState(false)
 
   const updateValues = (event) => {
     setValues({
@@ -55,9 +54,6 @@ function App() {
   useEffect(() => {
     if (dataConnection) {
       dataConnection.onmessage = (event) => {
-        if (!isConnectionOpen) {
-          setIsConnectionOpen(true) 
-        }
         console.log(event.data)
       }
     }
@@ -113,7 +109,7 @@ function App() {
             }
           </div>
           {dataConnection && dataConnection.readyState === 'open' ?
-            <Button onClick={() => dataConnection.send("fuck")}>send fuck</Button>
+            <Button onClick={() => dataConnection.send(":)")}>send :)</Button>
             : null
           }
           {selection === "student" ?

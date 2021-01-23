@@ -14,7 +14,6 @@ async function createRoom() {
     peerConnection.onicecandidate = (event) => {
         if (!event.candidate) {
             console.log('got final candidate')
-            return
         } else {
             console.log("got candidate: ", event.candidate)
             callerCandidateCollection.add(event.candidate.toJSON())

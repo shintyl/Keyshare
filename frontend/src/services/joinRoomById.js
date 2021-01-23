@@ -18,7 +18,6 @@ async function joinRoomById(roomId) {
         peerConnection.onicecandidate = (event) => {
             if (!event.candidate) {
                 console.log("got final candidate")
-                return
             } else {
                 console.log('Got candidate: ', event.candidate);
                 calleeCandidatesCollection.add(event.candidate.toJSON());
