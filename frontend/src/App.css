@@ -3,9 +3,14 @@
   src: url('./fonts/Pineapple.ttf');
 }
 
+@font-face {
+  font-family: "American Typewriter";
+  src: url('./fonts/American Typewriter Regular.ttf');
+}
+
 .App {
   text-align: center;
-  font-family: 'Pineapple Grass';
+  font-family: 'American Typewriter';
 }
 
 .App-header {
@@ -39,4 +44,12 @@
 
 .Body-link {
   color: #61dafb;
+}
+
+.topInstruction {
+  padding-top: 10px;
+}
+
+.bottomInstruction {
+  padding-bottom: 10px;
 }
