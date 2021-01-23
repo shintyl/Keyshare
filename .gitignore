@@ -9,4 +9,4 @@ build
 
 /src/main/resources
 
-.project
+*.project
