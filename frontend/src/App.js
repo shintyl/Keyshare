@@ -1,9 +1,10 @@
 import backgroundPhoto from './resources/keyshare-bg.png';
 import './App.css';
-import React from "react";
 import {createMuiTheme, makeStyles, ThemeProvider} from "@material-ui/core/styles";
-import {Button, Grid, Paper, TextField, Typography} from "@material-ui/core";
+import {Button, Paper, TextField, Typography} from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     backgroundDiv: {
@@ -45,9 +46,13 @@ function App() {
 
   const updateSelection = (event, newSelection) => {
     setSelection(newSelection);
+    setCopied(false);
   }
 
   const classes = useStyles();
+
+  const [copied, setCopied] = useState(false);
+  const roomIdValue = 'X4YQ78NQ';
 
   return (
     <ThemeProvider theme = {theme}>
@@ -79,7 +84,7 @@ function App() {
               {selection === "student" ?
                   <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
                   :
-                  <TextField name='genRoomId' variant='filled' value="X4YQ78NQ" InputProps={{readOnly: true,}}/>
+                  <TextField name='genRoomId' variant='filled' value={roomIdValue} InputProps={{readOnly: true,}}/>
               }
           </div>
           {selection === "student" ?
@@ -87,9 +92,22 @@ function App() {
               Connect
 	        </Button>
             :
-            <Button variant="contained">
-              Copy to clipboard
-	        </Button>
+              copied ?
+                  <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                      <div>
+                          <Button variant="contained" color="primary">
+                              Copied!
+                          </Button>
+                      </div>
+                  </CopyToClipboard>
+                  :
+                  <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                      <div>
+                          <Button variant="contained">
+                              Copy to Clipboard
+                          </Button>
+                      </div>
+                  </CopyToClipboard>
           }
         </div>
         <div className="Instructions">
