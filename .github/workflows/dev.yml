@@ -39,7 +39,8 @@ jobs:
 
     steps:
       - name: Commit on the runner
-        run: git config user.email "runner@github.com";
+        run: 
+          git config user.email "runner@github.com";
           # git config user.name "Runner";
           # git add -f
           # git add -f

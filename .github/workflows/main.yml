@@ -39,10 +39,11 @@ jobs:
 
     steps:
       - name: Commit on the runner
-        run: git config user.email "runner@github.com";
-          git config user.name "Runner";
-          git add -f
-          git add -f
-          git commit -m "None"
+        run: 
+          git config user.email "runner@github.com";
+          # git config user.name "Runner";
+          # git add -f
+          # git add -f
+          # git commit -m "None"
       - name: Deploy to Heroku
         run: git checkout `git subtree split -P iterations`; git push -f origin HEAD:heroku-deploy
