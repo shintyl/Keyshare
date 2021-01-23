@@ -73,14 +73,14 @@ public class Server {
       res.status(200);
       res.type("text/html");
 
-      return IOUtils.toString(Spark.class.getResourceAsStream("index.html"));
+      return IOUtils.toString(Spark.class.getResourceAsStream("/index.html"));
     });
 
     get("/", (req, res) -> {
       res.status(200);
       res.type("text/html");
 
-      return IOUtils.toString(Spark.class.getResourceAsStream("index.html"));
+      return IOUtils.toString(Spark.class.getResourceAsStream("/index.html"));
     });
 
   }
