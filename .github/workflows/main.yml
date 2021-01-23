@@ -19,8 +19,9 @@ jobs:
         run: git fetch
       - name: checkout from dev-deploy
         run: git checkout dev-deploy
-      - name: force push to main-deploy
+      - name: add name
         run:
           git config user.email "runner@github.com";
           git config user.name "Runner";
-          git push -f origin HEAD:main-deploy
+      - name: push
+        run: git push -f origin HEAD:main-deploy
