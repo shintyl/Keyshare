@@ -1,0 +1,24 @@
+name: keyshare CD to Heroku
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  buildReactAssets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: fetch
+        run: git fetch
+      - name: checkout from dev-deploy
+        run: git checkout dev-deploy
+      - name: add name
+        run:
+          git config user.email "runner@github.com";
+          git config user.name "Runner";
+      - name: push
+        run: git push -f origin HEAD:main-deploy
