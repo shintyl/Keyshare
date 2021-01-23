@@ -46,6 +46,7 @@ function App() {
 
   const updateSelection = (event, newSelection) => {
     setSelection(newSelection);
+    setCopied(false);
   }
 
   const classes = useStyles();
@@ -92,9 +93,13 @@ function App() {
 	        </Button>
             :
               copied ?
-                  <Button variant="contained" color="primary">
-                      Copied!
-                  </Button>
+                  <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                      <div>
+                          <Button variant="contained" color="primary">
+                              Copied!
+                          </Button>
+                      </div>
+                  </CopyToClipboard>
                   :
                   <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
                       <div>
