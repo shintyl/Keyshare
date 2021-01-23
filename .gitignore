@@ -8,3 +8,5 @@ build
 .devcontainer
 
 /src/main/resources
+
+.project
