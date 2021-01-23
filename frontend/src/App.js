@@ -33,7 +33,7 @@ function App() {
       <header className="App-header">
       </header>
       <div className="Body">
-        <img src={backgroundPhoto} alt="Background image" className={classes.backgroundDiv} style={{zIndex:-1}}/>
+        <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
         <Typography variant='h4'>Enter your room ID:</Typography>
 	    <TextField name='roomId' variant='filled' size='small' required label='Room ID is required' onChange={updateValues}/>
         <Button variant="contained">
