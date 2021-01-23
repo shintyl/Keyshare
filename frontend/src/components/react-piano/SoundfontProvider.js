@@ -56,18 +56,20 @@ class SoundfontProvider extends React.Component {
     });
   };
 
-  playNote = midiNumber => {
-    this.props.audioContext.resume().then(() => {
-      const audioNode = this.state.instrument.play(midiNumber);
-      this.setState({
-        activeAudioNodes: Object.assign({}, this.state.activeAudioNodes, {
-          [midiNumber]: audioNode,
-        }),
+  playNote = (midiNumber, velocity) => {
+    if(this.state.instrument) {
+      this.props.audioContext.resume().then(() => {
+        const audioNode = this.state.instrument.play(midiNumber, 0, {gain: (velocity || 127) / 127});
+        this.setState({
+          activeAudioNodes: Object.assign({}, this.state.activeAudioNodes, {
+            [midiNumber]: audioNode,
+          }),
+        });
       });
-    });
+    }
   };
 
-  stopNote = midiNumber => {
+  stopNote = (midiNumber, velocity) => {
     this.props.audioContext.resume().then(() => {
       if (!this.state.activeAudioNodes[midiNumber]) {
         return;

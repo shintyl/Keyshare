@@ -13,6 +13,7 @@ import {
 } from "react-router-dom";
 import { Piano, KeyboardShortcuts, MidiNumbers } from './components/react-piano';
 import 'react-piano/dist/styles.css';
+import SoundfontProvider from "./components/react-piano/SoundfontProvider";
 
 const useStyles = makeStyles((theme) => ({
     backgroundDiv: {
@@ -37,6 +38,9 @@ const theme = createMuiTheme({
     ],
   },
 });
+
+const audioContext = new window.AudioContext();
+const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
 
 function App() {
   const [values, setValues] = React.useState({
@@ -136,16 +140,19 @@ function App() {
             </div>
           </Route>
           <Route path="/piano">
-            <Piano
-                noteRange={{ first: firstNote, last: lastNote }}
-                playNote={(midiNumber, velocity) => {
-                  // Play a given note - see notes below
-                }}
-                stopNote={(midiNumber, velocity) => {
-                  // Stop playing a given note - see notes below
-                }}
-                width={1000}
-                keyboardShortcuts={keyboardShortcuts}
+            <SoundfontProvider
+                instrumentName="acoustic_grand_piano"
+                audioContext={audioContext}
+                hostname={soundfontHostname}
+                render={({ isLoading, playNote, stopNote }) => (
+                  <Piano
+                      noteRange={{ first: firstNote, last: lastNote }}
+                      playNote={playNote}
+                      stopNote={stopNote}
+                      width={1000}
+                      keyboardShortcuts={keyboardShortcuts}
+                  />
+                )}
             />
             <Link to="/"><Button>
               Exit Room

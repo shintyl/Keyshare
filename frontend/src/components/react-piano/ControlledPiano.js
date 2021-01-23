@@ -10,7 +10,7 @@ class ControlledPiano extends React.Component {
     activeNotes: PropTypes.arrayOf(
         PropTypes.shape({
           midiNumber: PropTypes.number.isRequired,
-          velocity: PropTypes.number.isRequired
+          velocity: PropTypes.number
         })
     ).isRequired,
     playNote: PropTypes.func.isRequired,
