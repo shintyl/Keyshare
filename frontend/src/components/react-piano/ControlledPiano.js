@@ -7,7 +7,12 @@ import Keyboard from './Keyboard';
 class ControlledPiano extends React.Component {
   static propTypes = {
     noteRange: PropTypes.object.isRequired,
-    activeNotes: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
+    activeNotes: PropTypes.arrayOf(
+        PropTypes.shape({
+          midiNumber: PropTypes.number.isRequired,
+          velocity: PropTypes.number.isRequired
+        })
+    ).isRequired,
     playNote: PropTypes.func.isRequired,
     stopNote: PropTypes.func.isRequired,
     onPlayNoteInput: PropTypes.func.isRequired,
@@ -56,27 +61,27 @@ class ControlledPiano extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.activeNotes !== prevProps.activeNotes) {
-      this.handleNoteChanges({
-        prevActiveNotes: prevProps.activeNotes || [],
-        nextActiveNotes: this.props.activeNotes || [],
-      });
-    }
+      this.handleNoteChanges(prevProps.activeNotes || [],
+        this.props.activeNotes || []);
   }
 
   // This function is responsible for diff'ing activeNotes
   // and playing or stopping notes accordingly.
-  handleNoteChanges = ({ prevActiveNotes, nextActiveNotes }) => {
-    if (this.props.disabled) {
+  handleNoteChanges = (prevActiveNotes, nextActiveNotes) => {
+    const prevActiveNumbers = prevActiveNotes.map(note => note.midiNumber);
+    const nextActiveNumbers = nextActiveNotes.map(note => note.midiNumber);
+    if (this.props.disabled || prevActiveNumbers !== nextActiveNumbers) {
       return;
     }
-    const notesStopped = difference(prevActiveNotes, nextActiveNotes);
-    const notesStarted = difference(nextActiveNotes, prevActiveNotes);
-    notesStarted.forEach((midiNumber) => {
-      this.props.playNote(midiNumber);
+    const numbersStopped = difference(prevActiveNumbers, nextActiveNumbers);
+    const numbersStarted = difference(nextActiveNumbers, prevActiveNumbers);
+    const notesStopped = prevActiveNotes.filter(note => numbersStopped.includes(note.midiNumber));
+    const notesStarted = nextActiveNotes.filter(note => numbersStarted.includes(note.midiNumber));
+    notesStarted.forEach((note) => {
+      this.props.playNote(note.midiNumber, note.velocity);
     });
-    notesStopped.forEach((midiNumber) => {
-      this.props.stopNote(midiNumber);
+    notesStopped.forEach((note) => {
+      this.props.stopNote(note.midiNumber, note.velocity);
     });
   };
 
@@ -119,20 +124,20 @@ class ControlledPiano extends React.Component {
     }
   };
 
-  onPlayNoteInput = (midiNumber) => {
+  onPlayNoteInput = (midiNumber, velocity) => {
     if (this.props.disabled) {
       return;
     }
     // Pass in previous activeNotes for recording functionality
-    this.props.onPlayNoteInput(midiNumber, this.props.activeNotes);
+    this.props.onPlayNoteInput(midiNumber, velocity, this.props.activeNotes);
   };
 
-  onStopNoteInput = (midiNumber) => {
+  onStopNoteInput = (midiNumber, velocity) => {
     if (this.props.disabled) {
       return;
     }
     // Pass in previous activeNotes for recording functionality
-    this.props.onStopNoteInput(midiNumber, this.props.activeNotes);
+    this.props.onStopNoteInput(midiNumber, velocity, this.props.activeNotes);
   };
 
   onMouseDown = () => {

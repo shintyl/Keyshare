@@ -8,7 +8,12 @@ import Keyboard from './Keyboard';
 class Piano extends React.Component {
   static propTypes = {
     noteRange: PropTypes.object.isRequired,
-    activeNotes: PropTypes.arrayOf(PropTypes.number.isRequired),
+    activeNotes: PropTypes.arrayOf(
+        PropTypes.shape({
+          midiNumber: PropTypes.number.isRequired,
+          velocity: PropTypes.number.isRequired
+        })
+    ).isRequired,
     playNote: PropTypes.func.isRequired,
     stopNote: PropTypes.func.isRequired,
     onPlayNoteInput: PropTypes.func,
@@ -33,9 +38,12 @@ class Piano extends React.Component {
   componentDidUpdate(prevProps) {
     // Make activeNotes "controllable" by using internal
     // state by default, but allowing prop overrides.
+    const prevPropNumbers = prevProps.activeNotes.map(note => note.midiNumber);
+    const thisPropNumbers = this.props.activeNotes.map(note => note.midiNumber);
+    const thisStateNumbers = this.state.activeNotes.map(note => note.midiNumber);
     if (
-      prevProps.activeNotes !== this.props.activeNotes &&
-      this.state.activeNotes !== this.props.activeNotes
+        prevPropNumbers !== thisPropNumbers &&
+        thisStateNumbers !== thisPropNumbers
     ) {
       this.setState({
         activeNotes: this.props.activeNotes || [],
@@ -43,33 +51,33 @@ class Piano extends React.Component {
     }
   }
 
-  handlePlayNoteInput = (midiNumber) => {
+  handlePlayNoteInput = (midiNumber, velocity) => {
     this.setState((prevState) => {
       // Need to be handled inside setState in order to set prevActiveNotes without
       // race conditions.
       if (this.props.onPlayNoteInput) {
-        this.props.onPlayNoteInput(midiNumber, { prevActiveNotes: prevState.activeNotes });
+        this.props.onPlayNoteInput(midiNumber, velocity, { prevActiveNotes: prevState.activeNotes });
       }
 
       // Don't append note to activeNotes if it's already present
-      if (prevState.activeNotes.includes(midiNumber)) {
+      if (prevState.activeNotes.some( note => note.midiNumber === midiNumber)) {
         return null;
       }
       return {
-        activeNotes: prevState.activeNotes.concat(midiNumber),
+        activeNotes: prevState.activeNotes.concat({midiNumber: midiNumber, velocity: velocity}),
       };
     });
   };
 
-  handleStopNoteInput = (midiNumber) => {
+  handleStopNoteInput = (midiNumber, velocity) => {
     this.setState((prevState) => {
       // Need to be handled inside setState in order to set prevActiveNotes without
       // race conditions.
       if (this.props.onStopNoteInput) {
-        this.props.onStopNoteInput(midiNumber, { prevActiveNotes: this.state.activeNotes });
+        this.props.onStopNoteInput(midiNumber, velocity, { prevActiveNotes: this.state.activeNotes });
       }
       return {
-        activeNotes: prevState.activeNotes.filter((note) => midiNumber !== note),
+        activeNotes: prevState.activeNotes.filter((note) => note.midiNumber !== midiNumber),
       };
     });
   };
