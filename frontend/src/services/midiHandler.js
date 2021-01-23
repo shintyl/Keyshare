@@ -10,6 +10,6 @@ function getInputsAndOutputs() {
 }
 
 //Play note to MIDI output with note info array (formatted as [on/off, note, velocity])
-function playNote = (noteInfo, midiOutput) => {
-	midiOutput.send([noteInfo[0],noteInfo[1],noteInfo[2]]);
-}
+// function playNote = (noteInfo, midiOutput) => {
+// 	midiOutput.send([noteInfo[0],noteInfo[1],noteInfo[2]]);
+// }
