@@ -61,18 +61,20 @@ class ControlledPiano extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.activeNotes !== prevProps.activeNotes) {
       this.handleNoteChanges(prevProps.activeNotes || [],
-        this.props.activeNotes || []);
+          this.props.activeNotes || []);
+    }
   }
 
   // This function is responsible for diff'ing activeNotes
   // and playing or stopping notes accordingly.
   handleNoteChanges = (prevActiveNotes, nextActiveNotes) => {
-    const prevActiveNumbers = prevActiveNotes.map(note => note.midiNumber);
-    const nextActiveNumbers = nextActiveNotes.map(note => note.midiNumber);
-    if (this.props.disabled || prevActiveNumbers !== nextActiveNumbers) {
+    if (this.props.disabled) {
       return;
     }
+    const prevActiveNumbers = prevActiveNotes.map(note => note.midiNumber);
+    const nextActiveNumbers = nextActiveNotes.map(note => note.midiNumber);
     const numbersStopped = difference(prevActiveNumbers, nextActiveNumbers);
     const numbersStarted = difference(nextActiveNumbers, prevActiveNumbers);
     const notesStopped = prevActiveNotes.filter(note => numbersStopped.includes(note.midiNumber));
@@ -176,7 +178,7 @@ class ControlledPiano extends React.Component {
           noteRange={this.props.noteRange}
           onPlayNoteInput={this.onPlayNoteInput}
           onStopNoteInput={this.onStopNoteInput}
-          activeNotes={this.props.activeNotes}
+          activeNotes={this.props.activeNotes.map(note => note.midiNumber)}
           className={this.props.className}
           disabled={this.props.disabled}
           width={this.props.width}

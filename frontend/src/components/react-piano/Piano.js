@@ -13,7 +13,7 @@ class Piano extends React.Component {
           midiNumber: PropTypes.number.isRequired,
           velocity: PropTypes.number.isRequired
         })
-    ).isRequired,
+    ),
     playNote: PropTypes.func.isRequired,
     stopNote: PropTypes.func.isRequired,
     onPlayNoteInput: PropTypes.func,
@@ -38,12 +38,9 @@ class Piano extends React.Component {
   componentDidUpdate(prevProps) {
     // Make activeNotes "controllable" by using internal
     // state by default, but allowing prop overrides.
-    const prevPropNumbers = prevProps.activeNotes.map(note => note.midiNumber);
-    const thisPropNumbers = this.props.activeNotes.map(note => note.midiNumber);
-    const thisStateNumbers = this.state.activeNotes.map(note => note.midiNumber);
     if (
-        prevPropNumbers !== thisPropNumbers &&
-        thisStateNumbers !== thisPropNumbers
+        prevProps.activeNotes !== this.props.activeNotes &&
+        this.state.activeNotes !== this.props.activeNotes
     ) {
       this.setState({
         activeNotes: this.props.activeNotes || [],
