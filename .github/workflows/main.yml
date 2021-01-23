@@ -14,4 +14,4 @@ jobs:
       - name: checkout from dev-deploy
         run: git checkout dev-deploy
       - name: force push to main-deploy
-        run: git push -f main-deploy
+        run: git push -f origin HEAD:main-deploy
