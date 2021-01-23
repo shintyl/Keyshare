@@ -5,6 +5,12 @@ import {Button, Paper, TextField, Typography} from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import React, { useState } from 'react';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     backgroundDiv: {
@@ -56,60 +62,73 @@ function App() {
 
   return (
     <ThemeProvider theme = {theme}>
-      <div className="App">
-        <header className="App-header">
-          <div className="Selector">
-            <ToggleButtonGroup exclusive value={selection} onChange={updateSelection} aria-label="userStatus">
-              <ToggleButton value="student" aria-label="left aligned">
-                Student
-              </ToggleButton>
-              <ToggleButton value="teacher" aria-label="right aligned">
-                Teacher
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </div>
-        </header>
-        <div className="Body">
-          <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
-          {selection === "student" ?
-            <Typography variant='h4' className={classes.entryId}>
-              Enter your room ID:
-            </Typography>
-            :
-            <Typography variant='h4' className={classes.entryId}>
-              Use this room ID:
-            </Typography>
-          }
-          <div className = "enterIdBox">
-              {selection === "student" ?
-                  <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
-                  :
-                  <TextField name='genRoomId' variant='filled' value={roomIdValue} InputProps={{readOnly: true,}}/>
-              }
-          </div>
-          {selection === "student" ?
-            <Button variant="contained">
-              Connect
-	        </Button>
-            :
-              copied ?
-                  <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
-                      <div>
-                          <Button variant="contained" color="primary">
-                              Copied!
-                          </Button>
-                      </div>
-                  </CopyToClipboard>
-                  :
-                  <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
-                      <div>
-                          <Button variant="contained">
-                              Copy to Clipboard
-                          </Button>
-                      </div>
-                  </CopyToClipboard>
-          }
+    <div className="App">
+      <header className="App-header">
+        <div className="Selector">
+          <ToggleButtonGroup exclusive value={selection} onChange={updateSelection} aria-label="userStatus">
+            <ToggleButton value="student" aria-label="left aligned">
+              Student
+            </ToggleButton>
+            <ToggleButton value="teacher" aria-label="right aligned">
+              Teacher
+            </ToggleButton>
+          </ToggleButtonGroup>
         </div>
+      </header>
+      <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <div className="Body">
+              {selection === "student" ?
+                  <Typography variant='h4' className={classes.entryId}>
+                    Enter your room ID:
+                  </Typography>
+                  :
+                  <Typography variant='h4' className={classes.entryId}>
+                    Use this room ID:
+                  </Typography>
+              }
+              <div className = "enterIdBox">
+                {selection === "student" ?
+                    <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
+                    :
+                    <TextField name='genRoomId' variant='filled' value={roomIdValue} InputProps={{readOnly: true,}}/>
+                }
+              </div>
+              {selection === "student" ?
+                  <Button variant="contained">
+                    Connect
+                  </Button>
+                  :
+                  copied ?
+                      <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                        <div>
+                          <Button variant="contained" color="primary">
+                            Copied!
+                          </Button>
+                        </div>
+                      </CopyToClipboard>
+                      :
+                      <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                        <div>
+                          <Button variant="contained">
+                            Copy to Clipboard
+                          </Button>
+                        </div>
+                      </CopyToClipboard>
+              }
+              <Button>
+                <Link to="/piano">Piano</Link>
+              </Button>
+            </div>
+          </Route>
+          <Route path="/piano">
+            <Button>
+              <Link to="/">Exit Room</Link>
+            </Button>
+          </Route>
+        </Switch>
         <div className="Instructions">
           <Paper elevation={10}>
             {selection === "student" ?
@@ -146,7 +165,8 @@ function App() {
 
           </Paper>
         </div>
-      </div>
+      </Router>
+    </div>
     </ThemeProvider>
   );
 }
