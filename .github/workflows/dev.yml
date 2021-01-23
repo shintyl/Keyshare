@@ -19,8 +19,12 @@ jobs:
         run: (cd ./frontend && npm install)
       - name: generate static assets
         run: (cd ./frontend && npm run build)
+      - name: debug 1
+        run: (cd ./frontend/build && ls)
       - name: move static assets
         run: mv ./frontend/build ./src/main/resources
+      - name: debug 2
+        run: (cd ./src/main/resources && ls)
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
