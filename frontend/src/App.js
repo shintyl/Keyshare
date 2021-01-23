@@ -75,18 +75,20 @@ function App() {
               Use this room ID:
             </Typography>
           }
-          {selection === "student" ?
-            <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
-            :
-            <TextField name='genRoomId' variant='filled' value="X4YQ78NQ" InputProps={{readOnly: true,}}/>
-          }
+          <div className = "enterIdBox">
+              {selection === "student" ?
+                  <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
+                  :
+                  <TextField name='genRoomId' variant='filled' value="X4YQ78NQ" InputProps={{readOnly: true,}}/>
+              }
+          </div>
           {selection === "student" ?
             <Button variant="contained">
               Connect
 	        </Button>
             :
             <Button variant="contained">
-              Copy
+              Copy to clipboard
 	        </Button>
           }
         </div>
@@ -95,13 +97,13 @@ function App() {
             {selection === "student" ?
               <div>
                 <Typography className="topInstruction" variant='h6'>
-                  Instructions:
+                  <b>Instructions:</b>
                 </Typography>
                 <Typography variant='h6'>
-                  1) Enter your instructor's room code above (which they should give you)
+                  1) Enter your instructor's room code above (they should provide this).
                 </Typography>
                 <Typography variant='h6'>
-                  2) Connect into the room by pressing the connect button
+                  2) Connect into the room by pressing the connect button.
                 </Typography>
                 <Typography className="bottomInstruction" variant='h6'>
                   3) Plug your MIDI instrument into your computer, and start playing.
@@ -110,7 +112,7 @@ function App() {
               :
               <div>
                 <Typography className="topInstruction" variant='h6'>
-                  Instructions:
+                    <b>Instructions:</b>
                 </Typography>
                 <Typography variant='h6'>
                   1) Give your student the auto-generated room code above.
@@ -119,7 +121,7 @@ function App() {
                   2) Wait until they connect, at which point you will be automatically redirected.
                 </Typography>
                 <Typography className="bottomInstruction" variant='h6'>
-                  3) Wait for your student to plug their MIDI instrument in, and start listening.
+                  3) Have your student plug their MIDI instrument into their computer.
                 </Typography>
               </div>
             }
