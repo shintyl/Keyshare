@@ -1,1 +1,1 @@
-web: cd frontend && npm serve
+web: java -Dserver.port=$PORT -jar server-1.0-SNAPSHOT.jar
