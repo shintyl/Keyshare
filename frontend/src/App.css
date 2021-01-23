@@ -10,7 +10,6 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .Body {
@@ -21,9 +20,13 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .Body-link {
   color: #61dafb;
+}
+
+.img {
+	width: 80%;
 }
