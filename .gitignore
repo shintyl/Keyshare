@@ -4,6 +4,8 @@
 # Ignore Gradle build output directory
 build
 
+/bin/main
+
 .idea
 .devcontainer
 

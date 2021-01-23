@@ -1,24 +1,27 @@
 import backgroundPhoto from './resources/keyshare-bg.png';
 import './App.css';
-import React from "react";
-import {createMuiTheme, makeStyles, ThemeProvider} from "@material-ui/core/styles";
-import {Button, Grid, Paper, TextField, Typography} from "@material-ui/core";
-import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import React, { useEffect } from "react";
+import { createMuiTheme, makeStyles, ThemeProvider } from "@material-ui/core/styles";
+import { Button, Paper, TextField, Typography } from "@material-ui/core";
+import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+
+import createRoom from "./services/createRoom"
+import joinRoomById from "./services/joinRoomById"
 
 const useStyles = makeStyles((theme) => ({
-    backgroundDiv: {
-        height: '100%',
-        width: '100%',
-        top: '0px',
-        left:'0px',
-        position: 'fixed',
-    },
-    entryId: {
-        fontSize: "0.8em",
-    },
-    fillText: {
-        padding: "10px",
-    }
+  backgroundDiv: {
+    height: '100%',
+    width: '100%',
+    top: '0px',
+    left: '0px',
+    position: 'fixed',
+  },
+  entryId: {
+    fontSize: "0.8em",
+  },
+  fillText: {
+    padding: "10px",
+  }
 }));
 
 const theme = createMuiTheme({
@@ -34,12 +37,31 @@ function App() {
     roomId: '',
   });
 
+  const [dataConnection, setDataConnection] = React.useState(null)
+  const [isConnectionOpen, setIsConnectionOpen] = React.useState(false)
+
   const updateValues = (event) => {
     setValues({
       ...values,
       [event.target.name]: event.target.value,
     });
   }
+
+  useEffect(() => {
+    createRoom()
+      .then(response => { setDataConnection(response) }
+    )}, [])
+
+  useEffect(() => {
+    if (dataConnection) {
+      dataConnection.onmessage = (event) => {
+        if (!isConnectionOpen) {
+          setIsConnectionOpen(true) 
+        }
+        console.log(event.data)
+      }
+    }
+  }, [dataConnection])
 
   const [selection, setSelection] = React.useState('student');
 
@@ -49,8 +71,16 @@ function App() {
 
   const classes = useStyles();
 
+  const handleClickConnectButton = () => {
+    joinRoomById(values.roomId).then(
+      response => {
+        setDataConnection(response)
+        response.send("hello there")
+      })
+  }
+
   return (
-    <ThemeProvider theme = {theme}>
+    <ThemeProvider theme={theme}>
       <div className="App">
         <header className="App-header">
           <div className="Selector">
@@ -65,7 +95,7 @@ function App() {
           </div>
         </header>
         <div className="Body">
-          <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
+          <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{ zIndex: -1 }} />
           {selection === "student" ?
             <Typography variant='h4' className={classes.entryId}>
               Enter your room ID:
@@ -75,15 +105,19 @@ function App() {
               Use this room ID:
             </Typography>
           }
-          <div className = "enterIdBox">
-              {selection === "student" ?
-                  <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
-                  :
-                  <TextField name='genRoomId' variant='filled' value="X4YQ78NQ" InputProps={{readOnly: true,}}/>
-              }
+          <div className="enterIdBox">
+            {selection === "student" ?
+              <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues} />
+              :
+              <TextField name='genRoomId' variant='filled' value="X4YQ78NQ" InputProps={{ readOnly: true, }} />
+            }
           </div>
+          {dataConnection && dataConnection.readyState === 'open' ?
+            <Button onClick={() => dataConnection.send("fuck")}>send fuck</Button>
+            : null
+          }
           {selection === "student" ?
-            <Button variant="contained">
+            <Button variant="contained" onClick={handleClickConnectButton}>
               Connect
 	        </Button>
             :
@@ -112,7 +146,7 @@ function App() {
               :
               <div>
                 <Typography className="topInstruction" variant='h6'>
-                    <b>Instructions:</b>
+                  <b>Instructions:</b>
                 </Typography>
                 <Typography variant='h6'>
                   1) Give your student the auto-generated room code above.
