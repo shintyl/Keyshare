@@ -11,6 +11,8 @@ import {
     Route,
     Link
 } from "react-router-dom";
+import { Piano, KeyboardShortcuts, MidiNumbers } from './components/react-piano';
+import 'react-piano/dist/styles.css';
 
 const useStyles = makeStyles((theme) => ({
     backgroundDiv: {
@@ -57,8 +59,18 @@ function App() {
 
   const classes = useStyles();
 
+<<<<<<< HEAD
   const [copied, setCopied] = useState(false);
   const roomIdValue = 'X4YQ78NQ';
+=======
+  const firstNote = MidiNumbers.fromNote('c3');
+  const lastNote = MidiNumbers.fromNote('f5');
+  const keyboardShortcuts = KeyboardShortcuts.create({
+    firstNote: firstNote,
+    lastNote: lastNote,
+    keyboardConfig: KeyboardShortcuts.HOME_ROW,
+  });
+>>>>>>> Added piano
 
   return (
     <ThemeProvider theme = {theme}>
@@ -118,15 +130,26 @@ function App() {
                         </div>
                       </CopyToClipboard>
               }
-              <Button>
-                <Link to="/piano">Piano</Link>
-              </Button>
+              <Link to="/piano"><Button>
+                Piano
+              </Button></Link>
             </div>
           </Route>
           <Route path="/piano">
-            <Button>
-              <Link to="/">Exit Room</Link>
-            </Button>
+            <Piano
+                noteRange={{ first: firstNote, last: lastNote }}
+                playNote={(midiNumber) => {
+                  // Play a given note - see notes below
+                }}
+                stopNote={(midiNumber) => {
+                  // Stop playing a given note - see notes below
+                }}
+                width={1000}
+                keyboardShortcuts={keyboardShortcuts}
+            />
+            <Link to="/"><Button>
+              Exit Room
+            </Button></Link>
           </Route>
         </Switch>
         <div className="Instructions">
