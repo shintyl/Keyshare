@@ -12,6 +12,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: fetch
+        run: git fetch
       - name: checkout from dev-deploy
         run: git checkout dev-deploy
       - name: add name
