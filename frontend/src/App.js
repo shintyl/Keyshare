@@ -138,10 +138,10 @@ function App() {
           <Route path="/piano">
             <Piano
                 noteRange={{ first: firstNote, last: lastNote }}
-                playNote={(midiNumber) => {
+                playNote={(midiNumber, velocity) => {
                   // Play a given note - see notes below
                 }}
-                stopNote={(midiNumber) => {
+                stopNote={(midiNumber, velocity) => {
                   // Stop playing a given note - see notes below
                 }}
                 width={1000}
