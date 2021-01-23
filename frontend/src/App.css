@@ -23,11 +23,12 @@
 
 .Instructions {
   min-height: 30vh;
-  display: flex;
   flex-direction: column;
   align-items: center;
   font-size: calc(10px + 2vmin);
   color: black;
+  display: block;
+  padding: 50px 200px 0 200px;
 }
 
 .Body-link {
