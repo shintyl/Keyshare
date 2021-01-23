@@ -26,14 +26,6 @@ jar {
     }
 }
 
-heroku {
-//    jdkVersion = 1.8
-//    processTypes(
-//            web: "java -jar build/libs/Quorum-1.0-SNAPSHOT.jar"
-//    )
-//    appName="warm-ridge-98252"
-}
-
 sourceCompatibility = 1.8
 
 dependencies {
