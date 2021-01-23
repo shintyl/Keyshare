@@ -2,7 +2,8 @@ import backgroundPhoto from './resources/keyshare-bg.png';
 import './App.css';
 import React from "react";
 import {createMuiTheme, makeStyles, ThemeProvider} from "@material-ui/core/styles";
-import {Button, Paper, TextField, Typography} from "@material-ui/core";
+import {Button, Grid, Paper, TextField, Typography} from "@material-ui/core";
+import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab"
 
 const useStyles = makeStyles((theme) => ({
     backgroundDiv: {
@@ -34,20 +35,52 @@ function App() {
     });
   }
 
+  const [selection, setSelection] = React.useState('student');
+
+  const updateSelection = (event, newSelection) => {
+    setSelection(newSelection);
+  }
+
   const classes = useStyles();
 
   return (
     <ThemeProvider theme = {theme}>
       <div className="App">
         <header className="App-header">
+          <div className="Selector">
+            <ToggleButtonGroup exclusive value={selection} onChange={updateSelection} aria-label="I am a">
+              <ToggleButton value="student" aria-label="left aligned">
+                Student
+              </ToggleButton>
+              <ToggleButton value="teacher" aria-label="right aligned">
+                Teacher
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
         </header>
         <div className="Body">
           <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
-          <Typography variant='h4'>Enter your room ID:</Typography>
-	      <TextField name='roomId' variant='filled' size='small' required label='Room ID is required' onChange={updateValues}/>
-          <Button variant="contained">
-            Connect
-	      </Button>
+          <Paper elevation={3}>
+            <Grid container direction="column" justify="center" alignItems="center" p={3}>
+              <Grid item>
+                {{selection} === 'student' ?
+                  <Typography variant='h4'>
+                    Enter your room ID:
+                  </Typography>
+                  :
+                  <Typography variant='h4'>
+                    Use room ID:
+                  </Typography>
+                }
+              </Grid>
+              <Grid item>
+	            <TextField name='roomId' variant='filled' size='small' required label='Room ID is required' onChange={updateValues}/>
+              </Grid>
+              <Grid>
+                <Button variant="contained"> Connect </Button>
+              </Grid>
+            </Grid>
+          </Paper>
         </div>
         <div className="Instructions">
           <Paper elevation={3}>

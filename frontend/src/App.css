@@ -37,6 +37,9 @@
   padding: 50px 200px 0 200px;
 }
 
-.Body-link {
-  color: #61dafb;
+.Selector {
+  align-items: right;
+  font-size: calc(10px + 2vmin);
+  color: black;
+  display: block;
 }
