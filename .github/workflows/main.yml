@@ -11,12 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: init repo
-        run: /usr/bin/git init /home/runner/work/Keyshare/Keyshare
-      - name: add remote
-        run: /usr/bin/git remote add origin https://github.com/shintyl/Keyshare
-      - name: fetch
-        run: git fetch
+      - uses: actions/checkout@v2
       - name: checkout from dev-deploy
         run: git checkout dev-deploy
       - name: add name
