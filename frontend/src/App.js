@@ -198,7 +198,7 @@ function App() {
           </Route>
         </Switch>
         <div className="Instructions">
-          <Paper elevation={10}>
+          <Paper style={{marginLeft: "18%", marginRight: "18%"}} elevation={10}>
             {selection === "student" ?
               <div>
                 <Typography className="topInstruction" variant='h6'>
