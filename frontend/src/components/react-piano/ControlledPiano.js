@@ -72,8 +72,6 @@ class ControlledPiano extends React.Component {
 
   subscribeMidi = (input) => {
     input.onmidimessage = (msg) => {
-      if(this.props.selection === 'teacher')
-        return;
       const mm = msg.messageType ? msg : midimessage(msg)
       if (mm.messageType === 'noteon' && mm.velocity === 0) {
         mm.messageType = 'noteoff'
