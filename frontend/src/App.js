@@ -124,40 +124,31 @@ function App() {
 
 
   const handleClickConnectButton = () => {
+    console.log(values.roomId);
     if(values.roomId) {
       joinRoomById(values.roomId).then(
-          response => {
-            console.log(response.readyState);
-            setDataConnection(response);
-            setIsConnectionOpen(true);
-            setSendMIDI((prevFunc) => (statusB) => (dataBM, dataBL) => {
-              if(response.readyState === 'open') {
-                const buffer = new ArrayBuffer(3);
-                const view = new Uint8Array(buffer);
-                view[0] = statusB;
-                view[1] = dataBM;
-                view[2] = dataBL;
-                response.send(buffer);
-              }
-            });
-            //response.send("hello")
-          })
+        response => {
+          console.log('test');
+          setDataConnection(response);
+          setIsConnectionOpen(true);
+        }
+      )
     }
   };
 
-  // const sendyMIDI = (statusB) => (dataBM, dataBL) => {
-  //   if(dataConnection.readyState === 'open') {
-  //     const buffer = new ArrayBuffer(3);
-  //     const view = new Uint8Array(buffer);
-  //     view[0] = statusB;
-  //     view[1] = dataBM;
-  //     view[2] = dataBL;
-  //     dataConnection.send(buffer);
-  //   }
-  // };
+  const sendyMIDI = (statusB) => (dataBM, dataBL) => {
+    if(dataConnection.readyState === 'open') {
+      const buffer = new ArrayBuffer(3);
+      const view = new Uint8Array(buffer);
+      view[0] = statusB;
+      view[1] = dataBM;
+      view[2] = dataBL;
+      dataConnection.send(buffer);
+    }
+  };
 
-  const sendNoteDown = sendMIDI(0x90); //event 1001
-  const sendNoteUp   = sendMIDI(0x80); //event 1000
+  const sendNoteDown = sendyMIDI(0x90); //event 1001
+  const sendNoteUp   = sendyMIDI(0x80); //event 1000
 
   return (
     <ThemeProvider theme = {theme}>
