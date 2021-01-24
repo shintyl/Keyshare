@@ -14,6 +14,7 @@ import {
 import { Piano, KeyboardShortcuts, MidiNumbers } from './components/react-piano';
 import 'react-piano/dist/styles.css';
 import SoundfontProvider from "./components/react-piano/SoundfontProvider";
+import getInputsAndOutputs from "./services/midiHandler";
 
 const useStyles = makeStyles((theme) => ({
     backgroundDiv: {
@@ -75,6 +76,11 @@ function App() {
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
 >>>>>>> Added piano
+
+  const getMidiInput = getInputsAndOutputs(
+      (access) => access.inputs
+  );
+
 
   return (
     <ThemeProvider theme = {theme}>
@@ -151,6 +157,7 @@ function App() {
                       stopNote={stopNote}
                       width={1000}
                       keyboardShortcuts={keyboardShortcuts}
+                      MIDIInput={getMidiInput}
                   />
                 )}
             />

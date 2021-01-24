@@ -1,13 +1,16 @@
 //Return an array with inputs and outputs
-function getInputsAndOutputs() {
-	navigator.requestMIDIAccess().then(
-		function success(midiAccess) {
-			return [midiAccess.inputs,midiAccess.outputs];
-		}, function failure() {
-			window.alert('Could not automatically get a MIDI device. Make sure that you are using a compatible browser.')
-		}
-	);
+const getInputsAndOutputs = (filter) => (subscribe) => {
+	navigator.requestMIDIAccess()
+		.then(filter)
+		.then(inputs => {
+			inputs.forEach(subscribe);
+		})
+		.catch(
+			() => window.alert('Could not automatically get a MIDI device. Make sure that you are using a compatible browser.')
+		);
 }
+
+export default getInputsAndOutputs;
 
 //Play note to MIDI output with note info array (formatted as [on/off, note, velocity])
 // function playNote = (noteInfo, midiOutput) => {
