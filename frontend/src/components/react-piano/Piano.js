@@ -48,7 +48,7 @@ class Piano extends React.Component {
     }
   }
 
-  handlePlayNoteInput = (midiNumber, velocity) => {
+  handlePlayNoteInput = (midiNumber, velocity, doCallback) => {
     this.setState((prevState) => {
       // Don't append note to activeNotes if it's already present
       if (prevState.activeNotes.some( note => note.midiNumber === midiNumber)) {
@@ -56,7 +56,7 @@ class Piano extends React.Component {
       }
       // Need to be handled inside setState in order to set prevActiveNotes without
       // race conditions.
-      if (this.props.onPlayNoteInput) {
+      if (this.props.onPlayNoteInput && doCallback) {
         this.props.onPlayNoteInput(midiNumber, velocity) //, { prevActiveNotes: prevState.activeNotes });
       }
       return {
@@ -65,7 +65,7 @@ class Piano extends React.Component {
     });
   };
 
-  handleStopNoteInput = (midiNumber, velocity) => {
+  handleStopNoteInput = (midiNumber, velocity, doCallback) => {
     this.setState((prevState) => {
       // Don't remove note from activeNotes if it's already gone
       if (!prevState.activeNotes.some( note => note.midiNumber === midiNumber)) {
@@ -74,7 +74,7 @@ class Piano extends React.Component {
 
       // Need to be handled inside setState in order to set prevActiveNotes without
       // race conditions.
-      if (this.props.onStopNoteInput) {
+      if (this.props.onStopNoteInput && doCallback) {
         this.props.onStopNoteInput(midiNumber, velocity) //, { prevActiveNotes: this.state.activeNotes });
       }
       return {

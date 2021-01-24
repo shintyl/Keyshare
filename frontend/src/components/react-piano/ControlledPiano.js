@@ -72,8 +72,6 @@ class ControlledPiano extends React.Component {
 
   subscribeMidi = (input) => {
     input.onmidimessage = (msg) => {
-      if(this.props.selection === 'teacher')
-        return;
       const mm = msg.messageType ? msg : midimessage(msg)
       if (mm.messageType === 'noteon' && mm.velocity === 0) {
         mm.messageType = 'noteoff'
@@ -81,10 +79,10 @@ class ControlledPiano extends React.Component {
 
       switch (mm.messageType) {
         case 'noteon':
-          this.onPlayNoteInput(mm.key, mm.velocity);
+          this.onPlayNoteInput(mm.key, mm.velocity, true);
           break;
         case 'noteoff':
-          this.onStopNoteInput(mm.key, mm.velocity);
+          this.onStopNoteInput(mm.key, mm.velocity, true);
           break;
         default:
           console.log('unsupported ' + mm.messageType);
@@ -105,10 +103,10 @@ class ControlledPiano extends React.Component {
 
         switch (mm.messageType) {
           case 'noteon':
-            this.onPlayNoteInput(mm.key, mm.velocity);
+            this.onPlayNoteInput(mm.key, mm.velocity, false);
             break;
           case 'noteoff':
-            this.onStopNoteInput(mm.key, mm.velocity);
+            this.onStopNoteInput(mm.key, mm.velocity, false);
             break;
           default:
             console.log('unsupported ' + mm.messageType);
@@ -161,7 +159,7 @@ class ControlledPiano extends React.Component {
     }
     const midiNumber = this.getMidiNumberForKey(event.key);
     if (midiNumber) {
-      this.onPlayNoteInput(midiNumber);
+      this.onPlayNoteInput(midiNumber, 127, true);
     }
   };
 
@@ -173,24 +171,24 @@ class ControlledPiano extends React.Component {
     // the ctrl/meta/shift check is removed to fix that issue.
     const midiNumber = this.getMidiNumberForKey(event.key);
     if (midiNumber) {
-      this.onStopNoteInput(midiNumber);
+      this.onStopNoteInput(midiNumber, 0, true);
     }
   };
 
-  onPlayNoteInput = (midiNumber, velocity) => {
+  onPlayNoteInput = (midiNumber, velocity, doCallback) => {
     if (this.props.disabled) {
       return;
     }
     // Pass in previous activeNotes for recording functionality
-    this.props.onPlayNoteInput(midiNumber, velocity) //, this.props.activeNotes);
+    this.props.onPlayNoteInput(midiNumber, velocity, doCallback) //, this.props.activeNotes);
   };
 
-  onStopNoteInput = (midiNumber, velocity) => {
+  onStopNoteInput = (midiNumber, velocity, doCallback) => {
     if (this.props.disabled) {
       return;
     }
     // Pass in previous activeNotes for recording functionality
-    this.props.onStopNoteInput(midiNumber, velocity) //, this.props.activeNotes);
+    this.props.onStopNoteInput(midiNumber, velocity, doCallback) //, this.props.activeNotes);
   };
 
   onMouseDown = () => {
@@ -227,8 +225,8 @@ class ControlledPiano extends React.Component {
       >
         <Keyboard
           noteRange={this.props.noteRange}
-          onPlayNoteInput={this.onPlayNoteInput}
-          onStopNoteInput={this.onStopNoteInput}
+          onPlayNoteInput={(midiNumber) => this.onPlayNoteInput(midiNumber, 127, true)}
+          onStopNoteInput={(midiNumber) => this.onStopNoteInput(midiNumber, 0, true)}
           activeNotes={this.props.activeNotes.map(note => note.midiNumber)}
           className={this.props.className}
           disabled={this.props.disabled}
