@@ -2,9 +2,6 @@ import backgroundPhoto from './resources/keyshare-bg.png';
 import './App.css';
 
 import React, { useEffect } from "react";
-import { createMuiTheme, makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import { Button, Paper, TextField, Typography } from "@material-ui/core";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 
 import createRoom from "./services/createRoom"
 import joinRoomById from "./services/joinRoomById"
@@ -13,7 +10,7 @@ import {createMuiTheme, makeStyles, ThemeProvider} from "@material-ui/core/style
 import {Button, Paper, TextField, Typography} from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
