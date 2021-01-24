@@ -16,9 +16,9 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
       - name: install npm dependencies
-        run: (cd ./frontend && npm install)
+        run: (cd ./frontend && npm ci)
       - name: generate static assets
-        run: (cd ./frontend && npm run build)
+        run: (cd ./frontend && CI='' npm run build)
       - name: move static assets
         run: mv ./frontend/build ./src/main/resources
       - name: Set up JDK 1.8

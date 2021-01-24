@@ -1,38 +1,59 @@
+@font-face {
+  font-family: "American Typewriter";
+  src: url('./fonts/American Typewriter Regular.ttf');
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  font-family: 'American Typewriter';
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  min-height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  margin-top: -30px;
 }
 
-.App-link {
+.Body {
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: black;
+}
+
+.Instructions {
+  min-height: 30vh;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: black;
+  display: block;
+  padding: 50px 200px 0 200px;
+}
+
+.Body-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.topInstruction {
+  padding-top: 30px;
+}
+
+.bottomInstruction {
+  padding-bottom: 30px;
+}
+
+.enterIdBox {
+  padding: 5px 0 15px 0;
+}
+
+.defaultCopyButton {
+  text-align: right;
 }
