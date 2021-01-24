@@ -14,6 +14,15 @@ async function joinRoomById(roomId) {
         console.log('Create PeerConnection with configuration: ', configuration)
         const peerConnection = new RTCPeerConnection(configuration)
 
+        const promise = new Promise((resolve, reject) => {
+            peerConnection.ondatachannel = (event) => {
+                event.channel.onopen = () => {
+                    resolve(event.channel)
+                }
+                event.channel.binaryType = "arraybuffer";
+            }
+        });
+
         const calleeCandidatesCollection = roomRef.collection('calleeCandidates')
         peerConnection.onicecandidate = (event) => {
             if (!event.candidate) {
@@ -49,13 +58,7 @@ async function joinRoomById(roomId) {
             });
         });
 
-        return new Promise((resolve, reject) => {
-            peerConnection.ondatachannel = (event) => {
-                event.channel.onopen = () => {
-                    resolve(event.channel)
-                }
-            }
-        })
+        return promise;
     }
 }
 

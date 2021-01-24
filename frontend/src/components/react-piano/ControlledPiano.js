@@ -55,6 +55,7 @@ class ControlledPiano extends React.Component {
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
     this.props.MIDIInput(this.subscribeMidi);
+    this.subscribeRTC(this.props.RTCInput);
   }
 
   componentWillUnmount() {
@@ -71,6 +72,8 @@ class ControlledPiano extends React.Component {
 
   subscribeMidi = (input) => {
     input.onmidimessage = (msg) => {
+      if(this.props.selection === 'teacher')
+        return;
       const mm = msg.messageType ? msg : midimessage(msg)
       if (mm.messageType === 'noteon' && mm.velocity === 0) {
         mm.messageType = 'noteoff'
@@ -87,6 +90,31 @@ class ControlledPiano extends React.Component {
           console.log('unsupported ' + mm.messageType);
       }
     }
+  };
+
+  subscribeRTC = (setInput) => {
+    setInput({
+      onrtcmessage: (msg) => {
+        console.log('received inner');
+        console.log(msg);
+        const mm = midimessage(msg);
+        console.log(mm);
+        if (mm.messageType === 'noteon' && mm.velocity === 0) {
+          mm.messageType = 'noteoff'
+        }
+
+        switch (mm.messageType) {
+          case 'noteon':
+            this.onPlayNoteInput(mm.key, mm.velocity);
+            break;
+          case 'noteoff':
+            this.onStopNoteInput(mm.key, mm.velocity);
+            break;
+          default:
+            console.log('unsupported ' + mm.messageType);
+        }
+      }
+    })
   };
 
 
@@ -154,7 +182,7 @@ class ControlledPiano extends React.Component {
       return;
     }
     // Pass in previous activeNotes for recording functionality
-    this.props.onPlayNoteInput(midiNumber, velocity, this.props.activeNotes);
+    this.props.onPlayNoteInput(midiNumber, velocity) //, this.props.activeNotes);
   };
 
   onStopNoteInput = (midiNumber, velocity) => {
@@ -162,7 +190,7 @@ class ControlledPiano extends React.Component {
       return;
     }
     // Pass in previous activeNotes for recording functionality
-    this.props.onStopNoteInput(midiNumber, velocity, this.props.activeNotes);
+    this.props.onStopNoteInput(midiNumber, velocity) //, this.props.activeNotes);
   };
 
   onMouseDown = () => {
