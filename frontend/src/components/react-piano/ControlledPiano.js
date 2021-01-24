@@ -72,6 +72,8 @@ class ControlledPiano extends React.Component {
 
   subscribeMidi = (input) => {
     input.onmidimessage = (msg) => {
+      if(this.props.selection === 'teacher')
+        return;
       const mm = msg.messageType ? msg : midimessage(msg)
       if (mm.messageType === 'noteon' && mm.velocity === 0) {
         mm.messageType = 'noteoff'
@@ -90,24 +92,29 @@ class ControlledPiano extends React.Component {
     }
   };
 
-  subscribeRTC = (input) => {
-    input.onrtcmessage = (msg) => {
-      const mm = midimessage(msg);
-      if (mm.messageType === 'noteon' && mm.velocity === 0) {
-        mm.messageType = 'noteoff'
-      }
+  subscribeRTC = (setInput) => {
+    setInput({
+      onrtcmessage: (msg) => {
+        console.log('received inner');
+        console.log(msg);
+        const mm = midimessage(msg);
+        console.log(mm);
+        if (mm.messageType === 'noteon' && mm.velocity === 0) {
+          mm.messageType = 'noteoff'
+        }
 
-      switch (mm.messageType) {
-        case 'noteon':
-          this.onPlayNoteInput(mm.key, mm.velocity);
-          break;
-        case 'noteoff':
-          this.onStopNoteInput(mm.key, mm.velocity);
-          break;
-        default:
-          console.log('unsupported ' + mm.messageType);
+        switch (mm.messageType) {
+          case 'noteon':
+            this.onPlayNoteInput(mm.key, mm.velocity);
+            break;
+          case 'noteoff':
+            this.onStopNoteInput(mm.key, mm.velocity);
+            break;
+          default:
+            console.log('unsupported ' + mm.messageType);
+        }
       }
-    }
+    })
   };
 
 

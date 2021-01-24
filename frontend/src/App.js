@@ -75,9 +75,9 @@ function App() {
       }
     )}, []);
 
-  const RTCInput = {
+  const [RTCInput, setRTCInput] = React.useState({
     onrtcmessage: (msg) => null
-  };
+  });
 
   useEffect(() => {
     if (dataConnection) {
@@ -85,14 +85,17 @@ function App() {
         // if (!isConnectionOpen) {
         //   setIsConnectionOpen(true)
         // }
-        RTCInput.onrtcmessage(new Uint8Array(event.data));
-        //console.log(event.data)
+        RTCInput.onrtcmessage({
+          data: Array.from(new Uint8Array(event.data)),
+          receivedTime: 0
+        });
+        console.log('received outer');
       };
       console.log(dataConnection.readyState);
     } else {
       setSendMIDI((prevFunc) => (statusB) => (dataBM, dataBL) => null);
     }
-  }, [dataConnection, isConnectionOpen]);
+  }, [dataConnection, isConnectionOpen, RTCInput]);
 
   const updateSelection = (event, newSelection) => {
     setSelection(newSelection);
@@ -221,7 +224,8 @@ function App() {
                       width={1000}
                       keyboardShortcuts={keyboardShortcuts}
                       MIDIInput={getMidiInput}
-                      RTCInput={RTCInput}
+                      RTCInput={setRTCInput}
+                      selection={selection}
                   />
                 )}
             />
