@@ -10,6 +10,7 @@ async function createRoom() {
     console.log('Create PeerConnection with configuration: ', configuration);
     const peerConnection = new RTCPeerConnection(configuration);
     const dataConnection = peerConnection.createDataChannel("channel")
+    dataConnection.binaryType = "arraybuffer";
     const callerCandidateCollection = roomRef.collection('callerCandidates')
     peerConnection.onicecandidate = (event) => {
         if (!event.candidate) {
@@ -53,7 +54,7 @@ async function createRoom() {
         });
     });
 
-    return dataConnection
+    return { dataConnection: dataConnection, roomId: roomRef.id };
 }
 
 export default createRoom

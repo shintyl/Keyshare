@@ -154,7 +154,7 @@ class ControlledPiano extends React.Component {
       return;
     }
     // Pass in previous activeNotes for recording functionality
-    this.props.onPlayNoteInput(midiNumber, velocity, this.props.activeNotes);
+    this.props.onPlayNoteInput(midiNumber, velocity) //, this.props.activeNotes);
   };
 
   onStopNoteInput = (midiNumber, velocity) => {
@@ -162,7 +162,7 @@ class ControlledPiano extends React.Component {
       return;
     }
     // Pass in previous activeNotes for recording functionality
-    this.props.onStopNoteInput(midiNumber, velocity, this.props.activeNotes);
+    this.props.onStopNoteInput(midiNumber, velocity) //, this.props.activeNotes);
   };
 
   onMouseDown = () => {

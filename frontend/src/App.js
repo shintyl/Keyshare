@@ -54,8 +54,10 @@ function App() {
     roomId: '',
   });
 
-  const [dataConnection, setDataConnection] = React.useState(null)
-  const [isConnectionOpen, setIsConnectionOpen] = React.useState(false)
+  const [dataConnection,   setDataConnection]   = React.useState(null);
+  const [isConnectionOpen, setIsConnectionOpen] = React.useState(false);
+  const [roomKey,          setRoomKey]          = React.useState("");
+  const [sendMIDI,         setSendMIDI]         = React.useState((statusB) => (dataBM, dataBL) => null);
 
   const updateValues = (event) => {
     setValues({
@@ -66,8 +68,11 @@ function App() {
 
   useEffect(() => {
     createRoom()
-      .then(response => { setDataConnection(response) }
-    )}, [])
+      .then(response => {
+        setDataConnection(response.dataConnection);
+        setRoomKey(response.roomId);
+      }
+    )}, []);
 
   useEffect(() => {
     if (dataConnection) {
@@ -76,21 +81,35 @@ function App() {
           setIsConnectionOpen(true) 
         }
         console.log(event.data)
-      }
+      };
+      console.log(dataConnection.readyState);
+      // if(dataConnection.readyState === 'open') {
+      //   setSendMIDI((prevFunc) => (statusB) => (dataBM, dataBL) => {
+      //     const buffer = new ArrayBuffer(3);
+      //     const view = new Uint8Array(buffer);
+      //     view[0] = statusB;
+      //     view[1] = dataBM;
+      //     view[2] = dataBL;
+      //     dataConnection.send(buffer);
+      //   });
+      //   return;
+      // }
+    } else {
+      setSendMIDI((prevFunc) => (statusB) => (dataBM, dataBL) => null);
     }
-  }, [dataConnection, isConnectionOpen])
+  }, [dataConnection, isConnectionOpen]);
 
   const [selection, setSelection] = React.useState('student');
 
   const updateSelection = (event, newSelection) => {
     setSelection(newSelection);
     setCopied(false);
-  }
+  };
 
   const classes = useStyles();
   
   const [copied, setCopied] = useState(false);
-  const roomIdValue = 'X4YQ78NQ';
+
   const firstNote = MidiNumbers.fromNote('c3');
   const lastNote = MidiNumbers.fromNote('f5');
   const keyboardShortcuts = KeyboardShortcuts.create({
@@ -105,13 +124,40 @@ function App() {
 
 
   const handleClickConnectButton = () => {
-    joinRoomById(values.roomId).then(
-      response => {
-        setDataConnection(response)
-        setIsConnectionOpen(true)
-        response.send("hello")
-      })
-  }
+    if(values.roomId) {
+      joinRoomById(values.roomId).then(
+          response => {
+            console.log(response.readyState);
+            setDataConnection(response);
+            setIsConnectionOpen(true);
+            setSendMIDI((prevFunc) => (statusB) => (dataBM, dataBL) => {
+              if(response.readyState === 'open') {
+                const buffer = new ArrayBuffer(3);
+                const view = new Uint8Array(buffer);
+                view[0] = statusB;
+                view[1] = dataBM;
+                view[2] = dataBL;
+                response.send(buffer);
+              }
+            });
+            //response.send("hello")
+          })
+    }
+  };
+
+  // const sendyMIDI = (statusB) => (dataBM, dataBL) => {
+  //   if(dataConnection.readyState === 'open') {
+  //     const buffer = new ArrayBuffer(3);
+  //     const view = new Uint8Array(buffer);
+  //     view[0] = statusB;
+  //     view[1] = dataBM;
+  //     view[2] = dataBL;
+  //     dataConnection.send(buffer);
+  //   }
+  // };
+
+  const sendNoteDown = sendMIDI(0x90); //event 1001
+  const sendNoteUp   = sendMIDI(0x80); //event 1000
 
   return (
     <ThemeProvider theme = {theme}>
@@ -146,7 +192,7 @@ function App() {
                 {selection === "student" ?
                     <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
                     :
-                    <TextField name='genRoomId' variant='filled' value={roomIdValue} InputProps={{readOnly: true,}}/>
+                    <TextField name='genRoomId' variant='filled' value={roomKey} InputProps={{readOnly: true,}}/>
                 }
               </div>
               {selection === "student" ?
@@ -155,7 +201,7 @@ function App() {
                   </Button>
                   :
                   copied ?
-                      <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                      <CopyToClipboard text={roomKey} onCopy={() => setCopied(true)}>
                         <div>
                           <Button variant="contained" color="primary">
                             Copied!
@@ -163,7 +209,7 @@ function App() {
                         </div>
                       </CopyToClipboard>
                       :
-                      <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                      <CopyToClipboard text={roomKey} onCopy={() => setCopied(true)}>
                         <div>
                           <Button variant="contained">
                             Copy to Clipboard
@@ -186,6 +232,8 @@ function App() {
                       noteRange={{ first: firstNote, last: lastNote }}
                       playNote={playNote}
                       stopNote={stopNote}
+                      onPlayNoteInput={sendNoteDown}
+                      onStopNoteInput={sendNoteUp}
                       width={1000}
                       keyboardShortcuts={keyboardShortcuts}
                       MIDIInput={getMidiInput}

@@ -54,6 +54,7 @@ async function joinRoomById(roomId) {
                 event.channel.onopen = () => {
                     resolve(event.channel)
                 }
+                event.channel.binaryType = "arraybuffer";
             }
         })
     }
