@@ -74,7 +74,7 @@ class Piano extends React.Component {
 
       // Need to be handled inside setState in order to set prevActiveNotes without
       // race conditions.
-      if (this.props.onStopNoteInput, doCallback) {
+      if (this.props.onStopNoteInput && doCallback) {
         this.props.onStopNoteInput(midiNumber, velocity) //, { prevActiveNotes: this.state.activeNotes });
       }
       return {
