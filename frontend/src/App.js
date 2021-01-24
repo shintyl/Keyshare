@@ -54,7 +54,6 @@ function App() {
   const [isConnectionOpen, setIsConnectionOpen] = React.useState(false);
   const [roomKey,          setRoomKey]          = React.useState("");
   const [roomId,           setRoomId]           = React.useState("");
-  const [sendMIDI,         setSendMIDI]         = React.useState((statusB) => (dataBM, dataBL) => null);
   const [selection,        setSelection]        = React.useState('student');
   const [voiceStatus,      setVoiceStatus]      = React.useState(true);
   const [hearingStatus,    setHearingStatus]    = React.useState(true);
@@ -95,8 +94,6 @@ function App() {
         console.log('received outer');
       };
       console.log(dataConnection.readyState);
-    } else {
-      setSendMIDI((prevFunc) => (statusB) => (dataBM, dataBL) => null);
     }
   }, [dataConnection, isConnectionOpen, RTCInput]);
 
@@ -122,9 +119,9 @@ function App() {
   const firstNote = MidiNumbers.fromNote('a0');
   const lastNote = MidiNumbers.fromNote('c8');
   const keyboardShortcuts = KeyboardShortcuts.create({
-    firstNote: MidiNumbers.fromNote('c3'),
+    firstNote: MidiNumbers.fromNote('g2'),
     lastNote: MidiNumbers.fromNote('f5'),
-    keyboardConfig: KeyboardShortcuts.HOME_ROW,
+    keyboardConfig: KeyboardShortcuts.BOTTOM_ROW.concat(KeyboardShortcuts.QWERTY_ROW),
   });
 
   const getMidiInput = getInputsAndOutputs(
@@ -146,7 +143,7 @@ function App() {
   };
 
   const sendyMIDI = (statusB) => (dataBM, dataBL) => {
-    if(dataConnection.readyState === 'open' && selection === 'student') {
+    if(dataConnection && dataConnection.readyState === 'open' && selection === 'student') {
       const buffer = new ArrayBuffer(3);
       const view = new Uint8Array(buffer);
       view[0] = statusB;
