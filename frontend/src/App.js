@@ -1,24 +1,44 @@
 import backgroundPhoto from './resources/keyshare-bg.png';
 import './App.css';
-import React from "react";
+
+import React, { useEffect } from "react";
+import { createMuiTheme, makeStyles, ThemeProvider } from "@material-ui/core/styles";
+import { Button, Paper, TextField, Typography } from "@material-ui/core";
+import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+
+import createRoom from "./services/createRoom"
+import joinRoomById from "./services/joinRoomById"
+
 import {createMuiTheme, makeStyles, ThemeProvider} from "@material-ui/core/styles";
-import {Button, Grid, Paper, TextField, Typography} from "@material-ui/core";
+import {Button, Paper, TextField, Typography} from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import React, { useState } from 'react';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+import { Piano, KeyboardShortcuts, MidiNumbers } from './components/react-piano';
+import 'react-piano/dist/styles.css';
+import SoundfontProvider from "./components/react-piano/SoundfontProvider";
+import getInputsAndOutputs from "./services/midiHandler";
 
 const useStyles = makeStyles((theme) => ({
-    backgroundDiv: {
-        height: '100%',
-        width: '100%',
-        top: '0px',
-        left:'0px',
-        position: 'fixed',
-    },
-    entryId: {
-        fontSize: "0.8em",
-    },
-    fillText: {
-        padding: "10px",
-    }
+  backgroundDiv: {
+    height: '100%',
+    width: '100%',
+    top: '0px',
+    left: '0px',
+    position: 'fixed',
+  },
+  entryId: {
+    fontSize: "0.8em",
+  },
+  fillText: {
+    padding: "10px",
+  }
 }));
 
 const theme = createMuiTheme({
@@ -29,10 +49,16 @@ const theme = createMuiTheme({
   },
 });
 
+const audioContext = new window.AudioContext();
+const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
+
 function App() {
   const [values, setValues] = React.useState({
     roomId: '',
   });
+
+  const [dataConnection, setDataConnection] = React.useState(null)
+  const [isConnectionOpen, setIsConnectionOpen] = React.useState(false)
 
   const updateValues = (event) => {
     setValues({
@@ -41,57 +67,139 @@ function App() {
     });
   }
 
+  useEffect(() => {
+    createRoom()
+      .then(response => { setDataConnection(response) }
+    )}, [])
+
+  useEffect(() => {
+    if (dataConnection) {
+      dataConnection.onmessage = (event) => {
+        if (!isConnectionOpen) {
+          setIsConnectionOpen(true) 
+        }
+        console.log(event.data)
+      }
+    }
+  }, [dataConnection, isConnectionOpen])
+
   const [selection, setSelection] = React.useState('student');
 
   const updateSelection = (event, newSelection) => {
     setSelection(newSelection);
+    setCopied(false);
   }
 
   const classes = useStyles();
+  
+  const [copied, setCopied] = useState(false);
+  const roomIdValue = 'X4YQ78NQ';
+  const firstNote = MidiNumbers.fromNote('c3');
+  const lastNote = MidiNumbers.fromNote('f5');
+  const keyboardShortcuts = KeyboardShortcuts.create({
+    firstNote: firstNote,
+    lastNote: lastNote,
+    keyboardConfig: KeyboardShortcuts.HOME_ROW,
+  });
+
+  const getMidiInput = getInputsAndOutputs(
+      (access) => access.inputs
+  );
+
+
+  const handleClickConnectButton = () => {
+    joinRoomById(values.roomId).then(
+      response => {
+        setDataConnection(response)
+        setIsConnectionOpen(true)
+        response.send("hello")
+      })
+  }
 
   return (
     <ThemeProvider theme = {theme}>
-      <div className="App">
-        <header className="App-header">
-          <div className="Selector">
-            <ToggleButtonGroup exclusive value={selection} onChange={updateSelection} aria-label="userStatus">
-              <ToggleButton value="student" aria-label="left aligned">
-                Student
-              </ToggleButton>
-              <ToggleButton value="teacher" aria-label="right aligned">
-                Teacher
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </div>
-        </header>
-        <div className="Body">
-          <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
-          {selection === "student" ?
-            <Typography variant='h4' className={classes.entryId}>
-              Enter your room ID:
-            </Typography>
-            :
-            <Typography variant='h4' className={classes.entryId}>
-              Use this room ID:
-            </Typography>
-          }
-          <div className = "enterIdBox">
-              {selection === "student" ?
-                  <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
-                  :
-                  <TextField name='genRoomId' variant='filled' value="X4YQ78NQ" InputProps={{readOnly: true,}}/>
-              }
-          </div>
-          {selection === "student" ?
-            <Button variant="contained">
-              Connect
-	        </Button>
-            :
-            <Button variant="contained">
-              Copy to clipboard
-	        </Button>
-          }
+    <div className="App">
+      <header className="App-header">
+        <div className="Selector">
+          <ToggleButtonGroup exclusive value={selection} onChange={updateSelection} aria-label="userStatus">
+            <ToggleButton value="student" aria-label="left aligned">
+              Student
+            </ToggleButton>
+            <ToggleButton value="teacher" aria-label="right aligned">
+              Teacher
+            </ToggleButton>
+          </ToggleButtonGroup>
         </div>
+      </header>
+      <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <div className="Body">
+              {selection === "student" ?
+                  <Typography variant='h4' className={classes.entryId}>
+                    Enter your room ID:
+                  </Typography>
+                  :
+                  <Typography variant='h4' className={classes.entryId}>
+                    Use this room ID:
+                  </Typography>
+              }
+              <div className = "enterIdBox">
+                {selection === "student" ?
+                    <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
+                    :
+                    <TextField name='genRoomId' variant='filled' value={roomIdValue} InputProps={{readOnly: true,}}/>
+                }
+              </div>
+              {selection === "student" ?
+                  <Button variant="contained">
+                    Connect
+                  </Button>
+                  :
+                  copied ?
+                      <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                        <div>
+                          <Button variant="contained" color="primary">
+                            Copied!
+                          </Button>
+                        </div>
+                      </CopyToClipboard>
+                      :
+                      <CopyToClipboard text={roomIdValue} onCopy={() => setCopied(true)}>
+                        <div>
+                          <Button variant="contained">
+                            Copy to Clipboard
+                          </Button>
+                        </div>
+                      </CopyToClipboard>
+              }
+              <Link to="/piano"><Button>
+                Piano
+              </Button></Link>
+            </div>
+          </Route>
+          <Route path="/piano">
+            <SoundfontProvider
+                instrumentName="acoustic_grand_piano"
+                audioContext={audioContext}
+                hostname={soundfontHostname}
+                render={({ isLoading, playNote, stopNote }) => (
+                  <Piano
+                      noteRange={{ first: firstNote, last: lastNote }}
+                      playNote={playNote}
+                      stopNote={stopNote}
+                      width={1000}
+                      keyboardShortcuts={keyboardShortcuts}
+                      MIDIInput={getMidiInput}
+                  />
+                )}
+            />
+            <Link to="/"><Button>
+              Exit Room
+            </Button></Link>
+          </Route>
+        </Switch>
         <div className="Instructions">
           <Paper elevation={10}>
             {selection === "student" ?
@@ -112,7 +220,7 @@ function App() {
               :
               <div>
                 <Typography className="topInstruction" variant='h6'>
-                    <b>Instructions:</b>
+                  <b>Instructions:</b>
                 </Typography>
                 <Typography variant='h6'>
                   1) Give your student the auto-generated room code above.
@@ -128,7 +236,8 @@ function App() {
 
           </Paper>
         </div>
-      </div>
+      </Router>
+    </div>
     </ThemeProvider>
   );
 }
