@@ -150,7 +150,7 @@ function App() {
                 }
               </div>
               {selection === "student" ?
-                  <Button variant="contained">
+                  <Button variant="contained" onClick={handleClickConnectButton}>
                     Connect
                   </Button>
                   :
