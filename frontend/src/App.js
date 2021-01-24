@@ -87,15 +87,17 @@ function App() {
         // if (!isConnectionOpen) {
         //   setIsConnectionOpen(true)
         // }
-        RTCInput.onrtcmessage({
-          data: Array.from(new Uint8Array(event.data)),
-          receivedTime: 0
-        });
+        if(hearingStatus) {
+          RTCInput.onrtcmessage({
+            data: Array.from(new Uint8Array(event.data)),
+            receivedTime: 0
+          });
+        }
         console.log('received outer');
       };
       console.log(dataConnection.readyState);
     }
-  }, [dataConnection, isConnectionOpen, RTCInput]);
+  }, [dataConnection, isConnectionOpen, RTCInput, hearingStatus]);
 
   const updateSelection = (event, newSelection) => {
     setSelection(newSelection);
@@ -143,7 +145,7 @@ function App() {
   };
 
   const sendyMIDI = (statusB) => (dataBM, dataBL) => {
-    if(dataConnection && dataConnection.readyState === 'open' && selection === 'student') {
+    if(dataConnection && dataConnection.readyState === 'open' && voiceStatus) {
       const buffer = new ArrayBuffer(3);
       const view = new Uint8Array(buffer);
       view[0] = statusB;
