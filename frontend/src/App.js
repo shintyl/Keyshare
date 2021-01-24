@@ -136,7 +136,6 @@ function App() {
     if(roomId) {
       joinRoomById(roomId).then(
         response => {
-          console.log('test');
           setDataConnection(response);
           setIsConnectionOpen(true);
         }
@@ -228,13 +227,13 @@ function App() {
                       <b>Instructions:</b>
                     </Typography>
                     <Typography variant='h6'>
-                      1) Make sure your MIDI instrument is plugged into your computer and working.
+                      1) Make sure your MIDI instrument is connected and working.
                     </Typography>
                     <Typography variant='h6'>
-                      2) Enter your instructor's room code above (they should provide this).
+                      2) Enter your instructor's room code above and press connect.
                     </Typography>
                     <Typography className="bottomInstruction" variant='h6'>
-                      3) Connect into the room by pressing the connect button, and start playing.
+                      3) Press the 'piano' button to enter the piano screen, and start playing.
                     </Typography>
                   </div>
                   :
@@ -243,13 +242,13 @@ function App() {
                       <b>Instructions:</b>
                     </Typography>
                     <Typography variant='h6'>
-                      1) Give your student the auto-generated room code above.
+                      1) Make sure your student's MIDI instrument is connected and working.
                     </Typography>
                     <Typography variant='h6'>
-                      2) Wait until they connect, at which point you will be automatically redirected.
+                      2) Give your student the auto-generated room code and wait for connection.
                     </Typography>
                     <Typography className="bottomInstruction" variant='h6'>
-                      3) Have your student plug their MIDI instrument into their computer.
+                      3) Press the 'piano' button to enter the piano screen, and listen.
                     </Typography>
                   </div>
                 }
