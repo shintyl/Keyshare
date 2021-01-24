@@ -55,6 +55,7 @@ class ControlledPiano extends React.Component {
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
     this.props.MIDIInput(this.subscribeMidi);
+    this.subscribeRTC(this.props.RTCInput);
   }
 
   componentWillUnmount() {
@@ -72,6 +73,26 @@ class ControlledPiano extends React.Component {
   subscribeMidi = (input) => {
     input.onmidimessage = (msg) => {
       const mm = msg.messageType ? msg : midimessage(msg)
+      if (mm.messageType === 'noteon' && mm.velocity === 0) {
+        mm.messageType = 'noteoff'
+      }
+
+      switch (mm.messageType) {
+        case 'noteon':
+          this.onPlayNoteInput(mm.key, mm.velocity);
+          break;
+        case 'noteoff':
+          this.onStopNoteInput(mm.key, mm.velocity);
+          break;
+        default:
+          console.log('unsupported ' + mm.messageType);
+      }
+    }
+  };
+
+  subscribeRTC = (input) => {
+    input.onrtcmessage = (msg) => {
+      const mm = midimessage(msg);
       if (mm.messageType === 'noteon' && mm.velocity === 0) {
         mm.messageType = 'noteoff'
       }

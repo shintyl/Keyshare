@@ -58,13 +58,14 @@ function App() {
   const [isConnectionOpen, setIsConnectionOpen] = React.useState(false);
   const [roomKey,          setRoomKey]          = React.useState("");
   const [sendMIDI,         setSendMIDI]         = React.useState((statusB) => (dataBM, dataBL) => null);
+  const [selection,        setSelection]        = React.useState('student');
 
   const updateValues = (event) => {
     setValues({
       ...values,
       [event.target.name]: event.target.value,
     });
-  }
+  };
 
   useEffect(() => {
     createRoom()
@@ -74,32 +75,24 @@ function App() {
       }
     )}, []);
 
+  const RTCInput = {
+    onrtcmessage: (msg) => null
+  };
+
   useEffect(() => {
     if (dataConnection) {
       dataConnection.onmessage = (event) => {
-        if (!isConnectionOpen) {
-          setIsConnectionOpen(true) 
-        }
-        console.log(event.data)
+        // if (!isConnectionOpen) {
+        //   setIsConnectionOpen(true)
+        // }
+        RTCInput.onrtcmessage(new Uint8Array(event.data));
+        //console.log(event.data)
       };
       console.log(dataConnection.readyState);
-      // if(dataConnection.readyState === 'open') {
-      //   setSendMIDI((prevFunc) => (statusB) => (dataBM, dataBL) => {
-      //     const buffer = new ArrayBuffer(3);
-      //     const view = new Uint8Array(buffer);
-      //     view[0] = statusB;
-      //     view[1] = dataBM;
-      //     view[2] = dataBL;
-      //     dataConnection.send(buffer);
-      //   });
-      //   return;
-      // }
     } else {
       setSendMIDI((prevFunc) => (statusB) => (dataBM, dataBL) => null);
     }
   }, [dataConnection, isConnectionOpen]);
-
-  const [selection, setSelection] = React.useState('student');
 
   const updateSelection = (event, newSelection) => {
     setSelection(newSelection);
@@ -137,7 +130,7 @@ function App() {
   };
 
   const sendyMIDI = (statusB) => (dataBM, dataBL) => {
-    if(dataConnection.readyState === 'open') {
+    if(dataConnection.readyState === 'open' && selection === 'student') {
       const buffer = new ArrayBuffer(3);
       const view = new Uint8Array(buffer);
       view[0] = statusB;
@@ -228,6 +221,7 @@ function App() {
                       width={1000}
                       keyboardShortcuts={keyboardShortcuts}
                       MIDIInput={getMidiInput}
+                      RTCInput={RTCInput}
                   />
                 )}
             />
