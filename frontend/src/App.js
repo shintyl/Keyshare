@@ -38,6 +38,7 @@ function App() {
   });
 
   const [dataConnection, setDataConnection] = React.useState(null)
+  const [isConnectionOpen, setIsConnectionOpen] = React.useState(false)
 
   const updateValues = (event) => {
     setValues({
@@ -54,10 +55,13 @@ function App() {
   useEffect(() => {
     if (dataConnection) {
       dataConnection.onmessage = (event) => {
+        if (!isConnectionOpen) {
+          setIsConnectionOpen(true) 
+        }
         console.log(event.data)
       }
     }
-  }, [dataConnection])
+  }, [dataConnection, isConnectionOpen])
 
   const [selection, setSelection] = React.useState('student');
 
@@ -71,7 +75,8 @@ function App() {
     joinRoomById(values.roomId).then(
       response => {
         setDataConnection(response)
-        response.send("hello there")
+        setIsConnectionOpen(true)
+        response.send("hello")
       })
   }
 
