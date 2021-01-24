@@ -50,30 +50,33 @@ const audioContext = new window.AudioContext();
 const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
 
 function App() {
-  const [values, setValues] = React.useState({
-    roomId: '',
-  });
-
   const [dataConnection,   setDataConnection]   = React.useState(null);
   const [isConnectionOpen, setIsConnectionOpen] = React.useState(false);
   const [roomKey,          setRoomKey]          = React.useState("");
+  const [roomId,           setRoomId]           = React.useState("");
   const [sendMIDI,         setSendMIDI]         = React.useState((statusB) => (dataBM, dataBL) => null);
   const [selection,        setSelection]        = React.useState('student');
+  const [voiceStatus,      setVoiceStatus]      = React.useState(true);
+  const [hearingStatus,    setHearingStatus]    = React.useState(true);
 
   const updateValues = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+    if(event.target.value === roomKey){
+      window.alert('Your room ID cannot be your own teacher ID.');
+      return;
+    }
+    setRoomId(event.target.value);
   };
 
-  useEffect(() => {
+  useEffect(() =>
+    {
     createRoom()
-      .then(response => {
+      .then(response =>
+      {
         setDataConnection(response.dataConnection);
         setRoomKey(response.roomId);
-      }
-    )}, []);
+      })
+    },[]
+  );
 
   const [RTCInput, setRTCInput] = React.useState({
     onrtcmessage: (msg) => null
@@ -102,15 +105,25 @@ function App() {
     setCopied(false);
   };
 
+  const updateVoiceStatus = (event) => {
+        setVoiceStatus(!voiceStatus);
+        //Implement muting here thanks
+  }
+
+  const updateHearingStatus = (event) => {
+        setHearingStatus(!hearingStatus);
+        //Implement deafening here thanks
+  }
+
   const classes = useStyles();
   
   const [copied, setCopied] = useState(false);
 
-  const firstNote = MidiNumbers.fromNote('c3');
-  const lastNote = MidiNumbers.fromNote('f5');
+  const firstNote = MidiNumbers.fromNote('a0');
+  const lastNote = MidiNumbers.fromNote('c8');
   const keyboardShortcuts = KeyboardShortcuts.create({
-    firstNote: firstNote,
-    lastNote: lastNote,
+    firstNote: MidiNumbers.fromNote('c3'),
+    lastNote: MidiNumbers.fromNote('f5'),
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
 
@@ -120,9 +133,9 @@ function App() {
 
 
   const handleClickConnectButton = () => {
-    console.log(values.roomId);
-    if(values.roomId) {
-      joinRoomById(values.roomId).then(
+    console.log(roomId);
+    if(roomId) {
+      joinRoomById(roomId).then(
         response => {
           console.log('test');
           setDataConnection(response);
@@ -149,22 +162,22 @@ function App() {
   return (
     <ThemeProvider theme = {theme}>
     <div className="App">
-      <header className="App-header">
-        <div className="Selector">
-          <ToggleButtonGroup exclusive value={selection} onChange={updateSelection} aria-label="userStatus">
-            <ToggleButton value="student" aria-label="left aligned">
-              Student
-            </ToggleButton>
-            <ToggleButton value="teacher" aria-label="right aligned">
-              Teacher
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </div>
-      </header>
       <img src={backgroundPhoto} alt="Background" className={classes.backgroundDiv} style={{zIndex:-1}}/>
       <Router>
         <Switch>
           <Route exact path="/">
+            <header className="App-header">
+              <div className="Selector">
+                <ToggleButtonGroup exclusive value={selection} onChange={updateSelection} aria-label="userStatus">
+                  <ToggleButton value="student" aria-label="left aligned">
+                    Student
+                  </ToggleButton>
+                  <ToggleButton value="teacher" aria-label="right aligned">
+                    Teacher
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </div>
+            </header>
             <div className="Body">
               {selection === "student" ?
                   <Typography variant='h4' className={classes.entryId}>
@@ -177,7 +190,7 @@ function App() {
               }
               <div className = "enterIdBox">
                 {selection === "student" ?
-                    <TextField name='roomId' variant='filled' value={values.roomId} required onChange={updateValues}/>
+                    <TextField name='roomId' variant='filled' value={roomId} required onChange={updateValues}/>
                     :
                     <TextField name='genRoomId' variant='filled' value={roomKey} InputProps={{readOnly: true,}}/>
                 }
@@ -208,9 +221,59 @@ function App() {
                 Piano
               </Button></Link>
             </div>
+            <div className="Instructions">
+              <Paper style={{marginLeft: "18%", marginRight: "18%"}} elevation={10}>
+                {selection === "student" ?
+                  <div>
+                    <Typography className="topInstruction" variant='h6'>
+                      <b>Instructions:</b>
+                    </Typography>
+                    <Typography variant='h6'>
+                      1) Make sure your MIDI instrument is plugged into your computer and working.
+                    </Typography>
+                    <Typography variant='h6'>
+                      2) Enter your instructor's room code above (they should provide this).
+                    </Typography>
+                    <Typography className="bottomInstruction" variant='h6'>
+                      3) Connect into the room by pressing the connect button, and start playing.
+                    </Typography>
+                  </div>
+                  :
+                  <div>
+                    <Typography className="topInstruction" variant='h6'>
+                      <b>Instructions:</b>
+                    </Typography>
+                    <Typography variant='h6'>
+                      1) Give your student the auto-generated room code above.
+                    </Typography>
+                    <Typography variant='h6'>
+                      2) Wait until they connect, at which point you will be automatically redirected.
+                    </Typography>
+                    <Typography className="bottomInstruction" variant='h6'>
+                      3) Have your student plug their MIDI instrument into their computer.
+                    </Typography>
+                  </div>
+                }
+              </Paper>
+            </div>
           </Route>
           <Route path="/piano">
-            <SoundfontProvider
+            <header className="App-header">
+              <div className="Selector">
+                <ToggleButtonGroup onChange={updateVoiceStatus} aria-label="userStatus">
+                  <ToggleButton selected={!voiceStatus}>
+                    {voiceStatus ? 'Unmuted' : 'Muted'}
+                  </ToggleButton>
+                </ToggleButtonGroup>
+                <ToggleButtonGroup onChange={updateHearingStatus} aria-label="userStatus">
+                  <ToggleButton selected={!hearingStatus}>
+                    {hearingStatus ? 'Undeafened' : 'Deafened'}
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </div>
+            </header>
+            <div className="Instructions">
+              <SoundfontProvider
                 instrumentName="acoustic_grand_piano"
                 audioContext={audioContext}
                 hostname={soundfontHostname}
@@ -221,55 +284,20 @@ function App() {
                       stopNote={stopNote}
                       onPlayNoteInput={sendNoteDown}
                       onStopNoteInput={sendNoteUp}
-                      width={1000}
+                      width={1140}
                       keyboardShortcuts={keyboardShortcuts}
                       MIDIInput={getMidiInput}
                       RTCInput={setRTCInput}
                       selection={selection}
                   />
                 )}
-            />
+              />
+            </div>
             <Link to="/"><Button>
               Exit Room
             </Button></Link>
           </Route>
         </Switch>
-        <div className="Instructions">
-          <Paper style={{marginLeft: "18%", marginRight: "18%"}} elevation={10}>
-            {selection === "student" ?
-              <div>
-                <Typography className="topInstruction" variant='h6'>
-                  <b>Instructions:</b>
-                </Typography>
-                <Typography variant='h6'>
-                  1) Enter your instructor's room code above (they should provide this).
-                </Typography>
-                <Typography variant='h6'>
-                  2) Connect into the room by pressing the connect button.
-                </Typography>
-                <Typography className="bottomInstruction" variant='h6'>
-                  3) Plug your MIDI instrument into your computer, and start playing.
-                </Typography>
-              </div>
-              :
-              <div>
-                <Typography className="topInstruction" variant='h6'>
-                  <b>Instructions:</b>
-                </Typography>
-                <Typography variant='h6'>
-                  1) Give your student the auto-generated room code above.
-                </Typography>
-                <Typography variant='h6'>
-                  2) Wait until they connect, at which point you will be automatically redirected.
-                </Typography>
-                <Typography className="bottomInstruction" variant='h6'>
-                  3) Have your student plug their MIDI instrument into their computer.
-                </Typography>
-              </div>
-            }
-
-          </Paper>
-        </div>
       </Router>
     </div>
     </ThemeProvider>
