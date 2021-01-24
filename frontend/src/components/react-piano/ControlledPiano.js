@@ -103,10 +103,10 @@ class ControlledPiano extends React.Component {
 
         switch (mm.messageType) {
           case 'noteon':
-            this.onPlayNoteInput(mm.key, mm.velocity);
+            this.props.playNote(mm.key, mm.velocity);
             break;
           case 'noteoff':
-            this.onStopNoteInput(mm.key, mm.velocity);
+            this.props.playNote(mm.key, mm.velocity);
             break;
           default:
             console.log('unsupported ' + mm.messageType);
