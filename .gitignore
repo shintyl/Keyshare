@@ -5,10 +5,8 @@
 build
 
 /bin/main
-
 .idea
 .devcontainer
 
 /src/main/resources
-
 .project

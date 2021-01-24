@@ -89,7 +89,6 @@ public class Server {
 
       return IOUtils.toString(Spark.class.getResourceAsStream("/index.html"));
     });
-
   }
 
 }
