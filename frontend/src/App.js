@@ -1,5 +1,14 @@
 import backgroundPhoto from './resources/keyshare-bg.png';
 import './App.css';
+
+import React, { useEffect } from "react";
+import { createMuiTheme, makeStyles, ThemeProvider } from "@material-ui/core/styles";
+import { Button, Paper, TextField, Typography } from "@material-ui/core";
+import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+
+import createRoom from "./services/createRoom"
+import joinRoomById from "./services/joinRoomById"
+
 import {createMuiTheme, makeStyles, ThemeProvider} from "@material-ui/core/styles";
 import {Button, Paper, TextField, Typography} from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
@@ -17,19 +26,19 @@ import SoundfontProvider from "./components/react-piano/SoundfontProvider";
 import getInputsAndOutputs from "./services/midiHandler";
 
 const useStyles = makeStyles((theme) => ({
-    backgroundDiv: {
-        height: '100%',
-        width: '100%',
-        top: '0px',
-        left:'0px',
-        position: 'fixed',
-    },
-    entryId: {
-        fontSize: "0.8em",
-    },
-    fillText: {
-        padding: "10px",
-    }
+  backgroundDiv: {
+    height: '100%',
+    width: '100%',
+    top: '0px',
+    left: '0px',
+    position: 'fixed',
+  },
+  entryId: {
+    fontSize: "0.8em",
+  },
+  fillText: {
+    padding: "10px",
+  }
 }));
 
 const theme = createMuiTheme({
@@ -48,12 +57,31 @@ function App() {
     roomId: '',
   });
 
+  const [dataConnection, setDataConnection] = React.useState(null)
+  const [isConnectionOpen, setIsConnectionOpen] = React.useState(false)
+
   const updateValues = (event) => {
     setValues({
       ...values,
       [event.target.name]: event.target.value,
     });
   }
+
+  useEffect(() => {
+    createRoom()
+      .then(response => { setDataConnection(response) }
+    )}, [])
+
+  useEffect(() => {
+    if (dataConnection) {
+      dataConnection.onmessage = (event) => {
+        if (!isConnectionOpen) {
+          setIsConnectionOpen(true) 
+        }
+        console.log(event.data)
+      }
+    }
+  }, [dataConnection, isConnectionOpen])
 
   const [selection, setSelection] = React.useState('student');
 
@@ -78,6 +106,15 @@ function App() {
       (access) => access.inputs
   );
 
+
+  const handleClickConnectButton = () => {
+    joinRoomById(values.roomId).then(
+      response => {
+        setDataConnection(response)
+        setIsConnectionOpen(true)
+        response.send("hello")
+      })
+  }
 
   return (
     <ThemeProvider theme = {theme}>
@@ -183,7 +220,7 @@ function App() {
               :
               <div>
                 <Typography className="topInstruction" variant='h6'>
-                    <b>Instructions:</b>
+                  <b>Instructions:</b>
                 </Typography>
                 <Typography variant='h6'>
                   1) Give your student the auto-generated room code above.
