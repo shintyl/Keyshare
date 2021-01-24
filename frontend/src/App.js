@@ -63,11 +63,9 @@ function App() {
   }
 
   const classes = useStyles();
-
-<<<<<<< HEAD
+  
   const [copied, setCopied] = useState(false);
   const roomIdValue = 'X4YQ78NQ';
-=======
   const firstNote = MidiNumbers.fromNote('c3');
   const lastNote = MidiNumbers.fromNote('f5');
   const keyboardShortcuts = KeyboardShortcuts.create({
@@ -75,7 +73,6 @@ function App() {
     lastNote: lastNote,
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
->>>>>>> Added piano
 
   const getMidiInput = getInputsAndOutputs(
       (access) => access.inputs
